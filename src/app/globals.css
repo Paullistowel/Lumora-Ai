@@ -1,26 +1,345 @@
 @import "tailwindcss";
 
+/* Class-based dark mode: the theme toggle (Module 20) stamps .dark on <html>. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f7f8fb;
+  --surface: #ffffff;
+  --surface-muted: #f1f3f8;
+  --surface-raised: #ffffff;
+  --foreground: #0d1017;
+  --muted: #5d6472;
+  --border: #e3e6ee;
+  --border-strong: #cfd4e0;
+
+  --brand: #3355e8;
+  --brand-fg: #ffffff;
+  --brand-soft: #eaeffe;
+  --accent: #7b3fe4;
+  --accent-2: #14b8c4;
+
+  /* Risk bands — Module 5 */
+  --risk-original: #12784a;
+  --risk-low: #4a7c16;
+  --risk-moderate: #a56a00;
+  --risk-high: #c14d18;
+  --risk-critical: #bf2c33;
+
+  --shadow-sm: 0 1px 2px rgb(13 16 23 / 0.05), 0 1px 3px rgb(13 16 23 / 0.04);
+  --shadow-md: 0 4px 12px -2px rgb(13 16 23 / 0.08), 0 2px 6px -2px rgb(13 16 23 / 0.05);
+  --shadow-lg: 0 18px 40px -12px rgb(13 16 23 / 0.18), 0 6px 16px -8px rgb(13 16 23 / 0.10);
+  --shadow-glow: 0 0 0 1px rgb(51 85 232 / 0.10), 0 20px 50px -18px rgb(51 85 232 / 0.40);
+}
+
+.dark {
+  --background: #080a0f;
+  --surface: #11141c;
+  --surface-muted: #181c26;
+  --surface-raised: #171b25;
+  --foreground: #e9ebf1;
+  --muted: #98a0b1;
+  --border: #242936;
+  --border-strong: #333a4a;
+
+  --brand: #7692ff;
+  --brand-fg: #080a0f;
+  --brand-soft: #17203c;
+  --accent: #a97bf5;
+  --accent-2: #3ad3de;
+
+  --risk-original: #48d18d;
+  --risk-low: #9dd45f;
+  --risk-moderate: #e6b348;
+  --risk-high: #f2925e;
+  --risk-critical: #f77d7b;
+
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow-md: 0 4px 14px -2px rgb(0 0 0 / 0.5);
+  --shadow-lg: 0 20px 46px -14px rgb(0 0 0 / 0.7);
+  --shadow-glow: 0 0 0 1px rgb(118 146 255 / 0.16), 0 22px 56px -20px rgb(118 146 255 / 0.42);
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-surface-raised: var(--surface-raised);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-brand: var(--brand);
+  --color-brand-fg: var(--brand-fg);
+  --color-brand-soft: var(--brand-soft);
+  --color-accent: var(--accent);
+  --color-accent-2: var(--accent-2);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-risk-original: var(--risk-original);
+  --color-risk-low: var(--risk-low);
+  --color-risk-moderate: var(--risk-moderate);
+  --color-risk-high: var(--risk-high);
+  --color-risk-critical: var(--risk-critical);
+
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+* {
+  border-color: var(--border);
+}
+
+::selection {
+  background: color-mix(in srgb, var(--brand) 28%, transparent);
+}
+
+/* ── Utilities ───────────────────────────────────────────────────────────── */
+
+@utility text-gradient {
+  background: linear-gradient(
+    100deg,
+    var(--foreground) 10%,
+    var(--brand) 45%,
+    var(--accent) 75%,
+    var(--foreground) 98%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility surface-glass {
+  background: color-mix(in srgb, var(--surface) 72%, transparent);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+}
+
+/* Perspective wrapper for children that tilt in 3D. */
+@utility perspective {
+  perspective: 1200px;
+  perspective-origin: center;
+}
+
+@utility preserve-3d {
+  transform-style: preserve-3d;
+}
+
+/* ── Decorative layers ───────────────────────────────────────────────────── */
+
+.aurora {
+  position: absolute;
+  inset: -30% -10% auto -10%;
+  height: 70vh;
+  pointer-events: none;
+  filter: blur(70px);
+  opacity: 0.55;
+  background:
+    radial-gradient(38% 55% at 20% 35%, color-mix(in srgb, var(--brand) 70%, transparent), transparent 70%),
+    radial-gradient(34% 50% at 78% 28%, color-mix(in srgb, var(--accent) 62%, transparent), transparent 70%),
+    radial-gradient(30% 45% at 52% 72%, color-mix(in srgb, var(--accent-2) 52%, transparent), transparent 70%);
+  animation: aurora-drift 22s ease-in-out infinite alternate;
+}
+
+.dark .aurora {
+  opacity: 0.42;
+}
+
+@keyframes aurora-drift {
+  0% { transform: translate3d(-3%, 0, 0) scale(1); }
+  50% { transform: translate3d(3%, 2%, 0) scale(1.08); }
+  100% { transform: translate3d(-2%, -2%, 0) scale(1.03); }
+}
+
+.grid-lines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, color-mix(in srgb, var(--foreground) 6%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--foreground) 6%, transparent) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, #000 20%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, #000 20%, transparent 75%);
+}
+
+.noise {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.035;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Card that lifts and catches light on hover. */
+.lift {
+  transition:
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.35s ease;
+  will-change: transform;
+}
+.lift:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--border-strong);
+}
+
+/* Sheen that sweeps across a surface on hover. */
+.sheen {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.sheen::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  transform: translateX(-120%) skewX(-18deg);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--foreground) 8%, transparent),
+    transparent
+  );
+  transition: transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+.sheen:hover::after {
+  transform: translateX(120%) skewX(-18deg);
+}
+
+/* Animated conic gradient border for hero surfaces. */
+.glow-ring {
+  position: relative;
+}
+.glow-ring::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(
+    from var(--angle, 0deg),
+    transparent 20%,
+    var(--brand) 45%,
+    var(--accent) 60%,
+    transparent 80%
+  );
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  -webkit-mask-composite: xor;
+  animation: spin-angle 6s linear infinite;
+  pointer-events: none;
+}
+
+@property --angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes spin-angle {
+  to { --angle: 360deg; }
+}
+
+@keyframes float-y {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+.float {
+  animation: float-y 7s ease-in-out infinite;
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(0.9); opacity: 0.7; }
+  70% { transform: scale(1.6); opacity: 0; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+.pulse-ring::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  border: 2px solid currentColor;
+  animation: pulse-ring 2.4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes marquee-x {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.marquee-track {
+  animation: marquee-x var(--marquee-duration, 32s) linear infinite;
+}
+.marquee-host:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+@keyframes shimmer-bg {
+  to { background-position: -200% center; }
+}
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--surface-muted) 0%,
+    color-mix(in srgb, var(--foreground) 6%, var(--surface-muted)) 50%,
+    var(--surface-muted) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer-bg 1.6s linear infinite;
+}
+
+/* Scroll-driven progress bar on the marketing pages. */
+@keyframes scroll-progress {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+.scroll-progress {
+  transform-origin: 0 50%;
+  animation: scroll-progress linear both;
+  animation-timeline: scroll(root block);
+}
+
+/* Focus ring used across every interactive element. */
+.focus-ring:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+/* Respect users who ask for reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .aurora,
+  .float,
+  .marquee-track,
+  .glow-ring::before {
+    animation: none !important;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
 }

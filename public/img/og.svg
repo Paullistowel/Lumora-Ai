@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="AI-AIMS">
+  <defs>
+  <linearGradient id="gog" x1="0" y1="0" x2="1" y2="1">
+  <stop offset="0%" stop-color="#3355e8"/>
+  <stop offset="55%" stop-color="#7b3fe4"/>
+  <stop offset="100%" stop-color="#14b8c4"/>
+  </linearGradient>
+  <linearGradient id="sog" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/>
+  <stop offset="100%" stop-color="#ffffff" stop-opacity="0.25"/>
+  </linearGradient>
+  <filter id="bog" x="-40%" y="-40%" width="180%" height="180%">
+  <feGaussianBlur stdDeviation="26"/>
+  </filter>
+  </defs>
+  <rect width="1200" height="630" fill="#0d1017"/>
+  <circle cx="250" cy="180" r="240" fill="#3355e8" opacity="0.35" filter="url(#bog)"/>
+  <circle cx="950" cy="470" r="240" fill="#7b3fe4" opacity="0.30" filter="url(#bog)"/>
+  <text x="80" y="300" font-family="system-ui,sans-serif" font-size="78" font-weight="800" fill="#fff">AI-AIMS</text>
+  <text x="80" y="368" font-family="system-ui,sans-serif" font-size="32" fill="#fff" opacity="0.72">Academic Integrity &amp; Assignment Management</text>
+  <text x="80" y="440" font-family="system-ui,sans-serif" font-size="24" fill="#14b8c4">Semantic plagiarism detection · Writing feedback · Peer review</text>
+</svg>

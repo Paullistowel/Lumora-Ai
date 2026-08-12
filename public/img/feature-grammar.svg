@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 400" fill="none" role="img" aria-label="Text with grammar issues underlined and a suggestion card">
+  <defs>
+  <linearGradient id="ggr" x1="0" y1="0" x2="1" y2="1">
+  <stop offset="0%" stop-color="#3355e8"/>
+  <stop offset="55%" stop-color="#7b3fe4"/>
+  <stop offset="100%" stop-color="#14b8c4"/>
+  </linearGradient>
+  <linearGradient id="sgr" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/>
+  <stop offset="100%" stop-color="#ffffff" stop-opacity="0.25"/>
+  </linearGradient>
+  <filter id="bgr" x="-40%" y="-40%" width="180%" height="180%">
+  <feGaussianBlur stdDeviation="26"/>
+  </filter>
+  </defs>
+  <rect x="30" y="40" width="330" height="300" rx="16" fill="#ffffff" stroke="#0d1017" stroke-opacity="0.10"/>
+  <rect x="54" y="72" width="282" height="8" rx="4" fill="#0d1017" opacity="0.13"/>
+  <rect x="54" y="98" width="282" height="8" rx="4" fill="#0d1017" opacity="0.13"/>
+  <rect x="54" y="124" width="180" height="8" rx="4" fill="#0d1017" opacity="0.13"/>
+  <rect x="54" y="156" width="120" height="8" rx="4" fill="#bf2c33" opacity="0.30"/>
+  <path d="M54 170 q6 5 12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0" stroke="#bf2c33" stroke-width="2.2" fill="none"/>
+  <rect x="184" y="156" width="98" height="8" rx="4" fill="#0d1017" opacity="0.13"/>
+  <rect x="54" y="192" width="282" height="8" rx="4" fill="#0d1017" opacity="0.13"/>
+  <rect x="54" y="218" width="210" height="8" rx="4" fill="#0d1017" opacity="0.13"/>
+  <rect x="54" y="256" width="150" height="8" rx="4" fill="#a56a00" opacity="0.30"/>
+  <path d="M54 270 q6 5 12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0" stroke="#a56a00" stroke-width="2.2" fill="none"/>
+  <rect x="54" y="292" width="240" height="8" rx="4" fill="#0d1017" opacity="0.13"/>
+  <!-- suggestion card -->
+  <g transform="translate(238 116)">
+  <rect width="212" height="112" rx="14" fill="#ffffff" stroke="#3355e8" stroke-opacity="0.3"/>
+  <rect x="0" y="0" width="212" height="4" rx="2" fill="url(#ggr)"/>
+  <circle cx="24" cy="30" r="7" fill="#bf2c33"/>
+  <rect x="40" y="24" width="86" height="8" rx="4" fill="#0d1017" opacity="0.7"/>
+  <rect x="20" y="50" width="172" height="7" rx="3.5" fill="#0d1017" opacity="0.16"/>
+  <rect x="20" y="64" width="128" height="7" rx="3.5" fill="#0d1017" opacity="0.16"/>
+  <rect x="20" y="84" width="72" height="18" rx="9" fill="#3355e8"/>
+  <rect x="100" y="84" width="52" height="18" rx="9" fill="#0d1017" opacity="0.08"/>
+  </g>
+</svg>

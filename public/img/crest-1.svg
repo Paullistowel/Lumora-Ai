@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 48" role="img" aria-label="Northgate University">
+  <path d="M12 6 h26 a4 4 0 0 1 4 4 v18 c0 8 -8 13 -17 16 c-9 -3 -17 -8 -17 -16 v-18 a4 4 0 0 1 4 -4z" fill="#3355e8" opacity="0.16"/>
+  <path d="M12 6 h26 a4 4 0 0 1 4 4 v18 c0 8 -8 13 -17 16 c-9 -3 -17 -8 -17 -16 v-18 a4 4 0 0 1 4 -4z" fill="none" stroke="#3355e8" stroke-width="1.5" opacity="0.7"/>
+  <text x="25" y="28" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" font-weight="700" fill="#3355e8">NU</text>
+  <text x="54" y="29" font-family="system-ui,sans-serif" font-size="14" font-weight="600" fill="currentColor">Northgate University</text>
+</svg>

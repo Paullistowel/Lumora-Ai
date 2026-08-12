@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 400" fill="none" role="img" aria-label="Dashboard showing similarity trends over a semester">
+  <defs>
+  <linearGradient id="ga" x1="0" y1="0" x2="1" y2="1">
+  <stop offset="0%" stop-color="#3355e8"/>
+  <stop offset="55%" stop-color="#7b3fe4"/>
+  <stop offset="100%" stop-color="#14b8c4"/>
+  </linearGradient>
+  <linearGradient id="sa" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/>
+  <stop offset="100%" stop-color="#ffffff" stop-opacity="0.25"/>
+  </linearGradient>
+  <filter id="ba" x="-40%" y="-40%" width="180%" height="180%">
+  <feGaussianBlur stdDeviation="26"/>
+  </filter>
+  </defs>
+  <rect x="30" y="40" width="420" height="300" rx="18" fill="#ffffff" stroke="#0d1017" stroke-opacity="0.10"/>
+  <line x1="60" y1="100" x2="420" y2="100" stroke="#0d1017" stroke-opacity="0.07"/>
+  <line x1="60" y1="155" x2="420" y2="155" stroke="#0d1017" stroke-opacity="0.07"/>
+  <line x1="60" y1="210" x2="420" y2="210" stroke="#0d1017" stroke-opacity="0.07"/>
+  <line x1="60" y1="265" x2="420" y2="265" stroke="#0d1017" stroke-opacity="0.07"/>
+  <rect x="74" y="216" width="26" height="84" rx="7" fill="url(#ga)" opacity="0.5"/>
+  <rect x="124" y="164" width="26" height="136" rx="7" fill="url(#ga)" opacity="0.5700000000000001"/>
+  <rect x="174" y="190" width="26" height="110" rx="7" fill="url(#ga)" opacity="0.64"/>
+  <rect x="224" y="124" width="26" height="176" rx="7" fill="url(#ga)" opacity="0.71"/>
+  <rect x="274" y="152" width="26" height="148" rx="7" fill="url(#ga)" opacity="0.78"/>
+  <rect x="324" y="108" width="26" height="192" rx="7" fill="url(#ga)" opacity="0.8500000000000001"/>
+  <rect x="374" y="136" width="26" height="164" rx="7" fill="url(#ga)" opacity="0.92"/>
+  <polyline points="87,202 137,150 187,176 237,110 287,138 337,94 387,122" fill="none" stroke="#14b8c4" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="87" cy="202" r="4.5" fill="#ffffff" stroke="#14b8c4" stroke-width="2.5"/>
+  <circle cx="137" cy="150" r="4.5" fill="#ffffff" stroke="#14b8c4" stroke-width="2.5"/>
+  <circle cx="187" cy="176" r="4.5" fill="#ffffff" stroke="#14b8c4" stroke-width="2.5"/>
+  <circle cx="237" cy="110" r="4.5" fill="#ffffff" stroke="#14b8c4" stroke-width="2.5"/>
+  <circle cx="287" cy="138" r="4.5" fill="#ffffff" stroke="#14b8c4" stroke-width="2.5"/>
+  <circle cx="337" cy="94" r="4.5" fill="#ffffff" stroke="#14b8c4" stroke-width="2.5"/>
+  <circle cx="387" cy="122" r="4.5" fill="#ffffff" stroke="#14b8c4" stroke-width="2.5"/>
+  <rect x="60" y="60" width="110" height="10" rx="5" fill="#0d1017" opacity="0.14"/>
+</svg>

@@ -1,0 +1,437 @@
+// AI-AIMS — AI Academic Integrity & Assignment Management Platform
+// Dev datasource is SQLite; swap `provider` to "postgresql" for production.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// ─────────────────────────────────────────────
+// Module 1 — Identity, roles, org structure
+// ─────────────────────────────────────────────
+
+model User {
+  id           String  @id @default(cuid())
+  email        String  @unique
+  passwordHash String
+  fullName     String
+  role         String // STUDENT | LECTURER | ADMIN
+  avatarUrl    String?
+
+  // Verification & security
+  emailVerified    Boolean   @default(false)
+  otpHash          String?
+  otpExpiresAt     DateTime?
+  twoFactorEnabled Boolean   @default(false)
+  suspended        Boolean   @default(false)
+  lastLoginAt      DateTime?
+
+  // Student-specific profile fields (null for staff)
+  matricNumber String? @unique
+  level        Int?
+
+  // Onboarding tour: null until the user finishes or dismisses it.
+  onboardedAt DateTime?
+
+  departmentId String?
+  department   Department? @relation(fields: [departmentId], references: [id])
+
+  sessions           Session[]
+  enrollments        Enrollment[]
+  taughtCourses      Course[]     @relation("CourseLecturer")
+  submissions        Submission[]
+  reviewsAuthored    PeerReview[] @relation("ReviewAuthor")
+  notifications      Notification[]
+  auditLogs          AuditLog[]
+  createdAssignments Assignment[] @relation("AssignmentAuthor")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([role])
+  @@index([departmentId])
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String   @unique
+  userAgent String?
+  ipAddress String?
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+model Department {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  code      String   @unique
+  users     User[]
+  courses   Course[]
+  createdAt DateTime @default(now())
+}
+
+model Course {
+  id           String     @id @default(cuid())
+  title        String
+  code         String     @unique
+  level        Int
+  semester     String
+  departmentId String
+  department   Department @relation(fields: [departmentId], references: [id])
+  lecturerId   String?
+  lecturer     User?      @relation("CourseLecturer", fields: [lecturerId], references: [id])
+
+  enrollments Enrollment[]
+  assignments Assignment[]
+
+  createdAt DateTime @default(now())
+
+  @@index([departmentId])
+  @@index([lecturerId])
+}
+
+model Enrollment {
+  id        String   @id @default(cuid())
+  studentId String
+  student   User     @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  courseId  String
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([studentId, courseId])
+  @@index([courseId])
+}
+
+// ─────────────────────────────────────────────
+// Module 3 — Assignments
+// ─────────────────────────────────────────────
+
+model Assignment {
+  id           String @id @default(cuid())
+  title        String
+  instructions String
+  courseId     String
+  course       Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  createdById  String
+  createdBy    User   @relation("AssignmentAuthor", fields: [createdById], references: [id])
+
+  dueAt               DateTime
+  maxMarks            Int      @default(100)
+  allowLate           Boolean  @default(true)
+  locked              Boolean  @default(false)
+  similarityThreshold Int      @default(30) // % above which submissions are flagged
+
+  // Module 7 — peer review configuration
+  peerReviewEnabled   Boolean   @default(false)
+  reviewersPerStudent Int       @default(2)
+  reviewDueAt         DateTime?
+
+  rubricId String?
+  rubric   Rubric? @relation(fields: [rubricId], references: [id])
+
+  submissions Submission[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([courseId])
+  @@index([dueAt])
+}
+
+model Submission {
+  id           String     @id @default(cuid())
+  assignmentId String
+  assignment   Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  studentId    String
+  student      User       @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  version  Int     @default(1)
+  isLatest Boolean @default(true)
+  isLate   Boolean @default(false)
+
+  fileName   String
+  fileType   String // pdf | docx | txt | md
+  fileSize   Int
+  storageKey String // path on disk / object storage key
+
+  extractedText String @default("")
+  wordCount     Int    @default(0)
+
+  // PENDING | PROCESSING | COMPLETE | FAILED
+  status       String  @default("PENDING")
+  statusDetail String?
+
+  grade    Float?
+  feedback String?
+  gradedAt DateTime?
+
+  chunks           Chunk[]
+  similarityResult SimilarityResult?
+  writingFeedback  WritingFeedback?
+  reviewsReceived  PeerReview[]      @relation("ReviewSubject")
+
+  submittedAt DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([assignmentId])
+  @@index([studentId])
+  @@index([status])
+}
+
+// ─────────────────────────────────────────────
+// Modules 4 & 5 — Document processing + similarity
+// ─────────────────────────────────────────────
+
+// One paragraph of a submission plus its embedding vector.
+model Chunk {
+  id           String     @id @default(cuid())
+  submissionId String
+  submission   Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+
+  index     Int // paragraph order within the document
+  text      String
+  charStart Int @default(0)
+  charEnd   Int @default(0)
+
+  // Float32 vector serialised as JSON. On Postgres this becomes a pgvector column.
+  embedding String
+
+  matchesFrom SimilarityMatch[] @relation("MatchSource")
+  matchesTo   SimilarityMatch[] @relation("MatchTarget")
+
+  createdAt DateTime @default(now())
+
+  @@unique([submissionId, index])
+  @@index([submissionId])
+}
+
+model SimilarityResult {
+  id           String     @id @default(cuid())
+  submissionId String     @unique
+  submission   Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+
+  overallScore    Float // 0–100
+  riskLevel       String // ORIGINAL | LOW | MODERATE | HIGH | CRITICAL
+  confidence      Float // 0–1, how much text we had to judge from
+  chunksAnalyzed  Int
+  chunksFlagged   Int
+  comparedAgainst Int // corpus size at time of check
+
+  matches SimilarityMatch[]
+
+  computedAt DateTime @default(now())
+
+  @@index([riskLevel])
+}
+
+model SimilarityMatch {
+  id       String           @id @default(cuid())
+  resultId String
+  result   SimilarityResult @relation(fields: [resultId], references: [id], onDelete: Cascade)
+
+  sourceChunkId String
+  sourceChunk   Chunk  @relation("MatchSource", fields: [sourceChunkId], references: [id], onDelete: Cascade)
+  targetChunkId String
+  targetChunk   Chunk  @relation("MatchTarget", fields: [targetChunkId], references: [id], onDelete: Cascade)
+
+  score Float // cosine similarity 0–1
+
+  @@index([resultId])
+  @@index([sourceChunkId])
+}
+
+// ─────────────────────────────────────────────
+// Module 6 — AI writing assistant
+// ─────────────────────────────────────────────
+
+model WritingFeedback {
+  id           String     @id @default(cuid())
+  submissionId String     @unique
+  submission   Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+
+  readabilityScore  Float // Flesch reading ease
+  gradeLevel        Float // Flesch–Kincaid grade
+  academicToneScore Float // 0–100
+  overallScore      Float // 0–100
+
+  // JSON array of { category, severity, message, suggestion, excerpt }
+  issues String @default("[]")
+  // JSON array of strings
+  strengths String @default("[]")
+
+  createdAt DateTime @default(now())
+}
+
+// ─────────────────────────────────────────────
+// Modules 7, 8, 9 — Peer review, rubrics, review quality
+// ─────────────────────────────────────────────
+
+model Rubric {
+  id          String  @id @default(cuid())
+  name        String
+  description String?
+  isTemplate  Boolean @default(false)
+
+  criteria    RubricCriterion[]
+  assignments Assignment[]
+
+  createdAt DateTime @default(now())
+}
+
+model RubricCriterion {
+  id          String  @id @default(cuid())
+  rubricId    String
+  rubric      Rubric  @relation(fields: [rubricId], references: [id], onDelete: Cascade)
+  label       String
+  description String?
+  maxScore    Int     @default(10)
+  weight      Float   @default(1)
+  order       Int     @default(0)
+
+  scores ReviewScore[]
+
+  @@index([rubricId])
+}
+
+model PeerReview {
+  id           String     @id @default(cuid())
+  submissionId String
+  submission   Submission @relation("ReviewSubject", fields: [submissionId], references: [id], onDelete: Cascade)
+  reviewerId   String
+  reviewer     User       @relation("ReviewAuthor", fields: [reviewerId], references: [id], onDelete: Cascade)
+
+  // ASSIGNED | SUBMITTED | EXPIRED
+  status     String    @default("ASSIGNED")
+  comment    String?
+  totalScore Float?
+  dueAt      DateTime?
+
+  // Module 9 — AI assessment of the review itself
+  qualityScore     Float?
+  qualityBreakdown String? // JSON { specificity, constructiveness, respectfulness, depth }
+  qualityNotes     String?
+
+  scores ReviewScore[]
+
+  assignedAt  DateTime  @default(now())
+  submittedAt DateTime?
+
+  @@unique([submissionId, reviewerId])
+  @@index([reviewerId])
+}
+
+model ReviewScore {
+  id          String          @id @default(cuid())
+  reviewId    String
+  review      PeerReview      @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  criterionId String
+  criterion   RubricCriterion @relation(fields: [criterionId], references: [id], onDelete: Cascade)
+  score       Float
+  comment     String?
+
+  @@unique([reviewId, criterionId])
+}
+
+// ─────────────────────────────────────────────
+// Modules 13, 19, 20 — Notifications, audit, settings
+// ─────────────────────────────────────────────
+
+model Notification {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  type  String // SUBMISSION | SIMILARITY | REVIEW | FEEDBACK | DEADLINE | SYSTEM
+  title String
+  body  String
+  link  String?
+  read  Boolean @default(false)
+
+  createdAt DateTime @default(now())
+
+  @@index([userId, read])
+}
+
+model AuditLog {
+  id     String  @id @default(cuid())
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  action    String // LOGIN | LOGOUT | SUBMIT | RECHECK | GRADE | ADMIN_ACTION ...
+  entity    String?
+  entityId  String?
+  detail    String?
+  ipAddress String?
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
+}
+
+model SystemSetting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}
+
+// ─────────────────────────────────────────────
+// Marketing site — newsletter and consent
+// ─────────────────────────────────────────────
+
+model NewsletterSubscriber {
+  id    String @id @default(cuid())
+  email String @unique
+  name  String?
+
+  // Where on the site they subscribed, for attribution.
+  source String @default("footer")
+  // STUDENT | LECTURER | ADMINISTRATOR | OTHER
+  role   String?
+
+  confirmed      Boolean   @default(false)
+  unsubscribedAt DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}
+
+/**
+ * A record of each consent decision. The banner also writes a cookie so the
+ * choice survives without a round-trip, but GDPR requires being able to show
+ * *when* consent was given and to what — hence the server-side record.
+ */
+model ConsentRecord {
+  id        String   @id @default(cuid())
+  visitorId String
+  necessary Boolean  @default(true)
+  analytics Boolean  @default(false)
+  marketing Boolean  @default(false)
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  @@index([visitorId])
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  institution String?
+  topic     String
+  message   String
+  handled   Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([handled, createdAt])
+}
