@@ -2,7 +2,7 @@ import { HumanizerTool } from "./humanizer-tool";
 import { PageHeader } from "@/components/ui";
 
 export const metadata = {
-  title: "AI humanizer & AI-style detector · AI-AIMS",
+  title: "AI humanizer & AI-style detector",
   description:
     "Score how machine-like your writing reads, then rewrite the vocabulary and rhythm that gives it away.",
 };

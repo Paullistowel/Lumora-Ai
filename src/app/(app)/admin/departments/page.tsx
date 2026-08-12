@@ -11,7 +11,7 @@ import {
 } from "@/components/ui";
 import { DepartmentForm } from "./department-form";
 
-export const metadata = { title: "Departments · AI-AIMS" };
+export const metadata = { title: "Departments" };
 
 export default async function DepartmentsPage() {
   await requireRole("ADMIN");

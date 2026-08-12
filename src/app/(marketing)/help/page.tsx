@@ -7,9 +7,9 @@ import { Reveal, Stagger, StaggerItem } from "@/components/motion";
 import { ButtonLink, Card, PageHeader, SectionHeading } from "@/components/ui";
 
 export const metadata = {
-  title: "Help centre · AI-AIMS",
+  title: "Help centre",
   description:
-    "Guides and answers for students, lecturers and administrators using AI-AIMS.",
+    "Guides and answers for students, lecturers and administrators using Lume AI.",
 };
 
 const CATEGORIES = [
@@ -194,9 +194,9 @@ export default function HelpPage() {
 
       <Reveal>
         <p className="mt-10 text-center text-sm text-muted">
-          Looking for licensing answers? Those live on the{" "}
-          <Link href="/pricing" className="font-medium text-brand hover:underline">
-            pricing page
+          Looking for what has actually been measured? That lives on the{" "}
+          <Link href="/research" className="font-medium text-brand hover:underline">
+            research and evaluation page
           </Link>
           .
         </p>

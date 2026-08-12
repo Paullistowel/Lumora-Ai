@@ -14,7 +14,7 @@ import {
 import { formatDateTime, relativeTime } from "@/lib/format";
 import { AssignmentForm } from "./assignment-form";
 
-export const metadata = { title: "Assignments · AI-AIMS" };
+export const metadata = { title: "Assignments" };
 
 export default async function LecturerAssignmentsPage() {
   const user = await requireRole("LECTURER");

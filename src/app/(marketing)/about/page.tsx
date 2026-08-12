@@ -1,19 +1,27 @@
 import Image from "next/image";
-import { Compass, Eye, GraduationCap, Scale, ShieldCheck } from "lucide-react";
-import { Counter, Reveal, Stagger, StaggerItem } from "@/components/motion";
-import { ButtonLink, Card, PageHeader, SectionHeading } from "@/components/ui";
+import {
+  Compass, Eye, GraduationCap, Scale, ShieldCheck, Users,
+} from "lucide-react";
+import { Reveal, Stagger, StaggerItem } from "@/components/motion";
+import { MaturityBadge, type MaturityKey } from "@/components/brand";
+import {
+  ButtonLink, Card, CardHeader, PageHeader, SectionHeading, Table, Td, Th,
+} from "@/components/ui";
+import {
+  OBJECTIVES, RESEARCH_GAP, RESEARCH_PROBLEM, TECH_STACK,
+} from "@/lib/research";
 
 export const metadata = {
-  title: "About · AI-AIMS",
+  title: "About",
   description:
-    "Why we built a semantic academic integrity platform, and the principles that shape how it behaves.",
+    "Lume AI is a final-year research project by Group 4 at KNUST: an AI-powered academic integrity and peer review platform for higher education.",
 };
 
 const PRINCIPLES = [
   {
     icon: Eye,
     title: "Evidence, never verdicts",
-    body: "A similarity score is a reason to look, not a finding of misconduct. Every number in this platform comes with the paragraphs behind it, and every screen that shows a score also shows its confidence. The tool points; a human decides.",
+    body: "A similarity score is a reason to look, not a finding of misconduct. Every number in this platform comes with the passages behind it, and every screen that shows a score also shows its confidence. The tool points; a human decides.",
   },
   {
     icon: GraduationCap,
@@ -23,147 +31,193 @@ const PRINCIPLES = [
   {
     icon: ShieldCheck,
     title: "Student work stays private",
-    body: "Unpublished coursework is sensitive. The embedding model runs locally, the browser tools never upload anything, and an on-premise deployment means no submission leaves your institution's network. We do not train models on student work.",
+    body: "Unpublished coursework is sensitive. The embedding model runs locally, an analysis is private to whoever ran it, and an on-premise deployment means no submission leaves the institution's network. No model is trained on student work.",
   },
   {
     icon: Scale,
-    title: "Fair by construction",
-    body: "Peer review is double-blind and allocation is balanced by design, not by chance. Similarity is scoped per assignment so shared reading lists don't look like collusion. Quotations and citations are excluded from grammar correction.",
+    title: "Say what has not been measured",
+    body: "This is a research prototype and it labels itself as one. Where a result exists it is shown; where a study has not been run, the interface says evaluation pending rather than filling the gap with a plausible number.",
   },
 ] as const;
 
-const TIMELINE = [
-  {
-    period: "The problem",
-    title: "Word-matching stopped working",
-    body: "Every mainstream checker compares strings. A student who spends ten minutes rewording scores near zero — and generative models made that ten minutes into ten seconds. Detection built on surface form had quietly stopped measuring what it claimed to measure.",
-  },
-  {
-    period: "The approach",
-    title: "Compare meaning instead",
-    body: "Sentence-transformer embeddings represent a paragraph as a point in semantic space. Two passages that argue the same thing land close together regardless of vocabulary. That single change is what lets the system catch a paraphrase.",
-  },
-  {
-    period: "The scope",
-    title: "Detection alone changes nothing",
-    body: "A number on a dashboard does not improve anyone's writing. So the platform grew: writing feedback that explains what to fix, peer review that teaches students to read critically, and analytics that show whether any of it is working.",
-  },
-  {
-    period: "Now",
-    title: "One platform, twenty modules",
-    body: "Assignment workflow, semantic detection, writing feedback, AI-style analysis, peer review with quality scoring, rubrics, dashboards for three roles, notifications, audit logging and a knowledge base.",
-  },
-] as const;
+const PROJECT = [
+  { label: "Project", value: "Lume AI — AI-Powered Academic Integrity & Peer Review Platform" },
+  { label: "Team", value: "Group 4" },
+  { label: "Institution", value: "Kwame Nkrumah University of Science and Technology (KNUST)" },
+  { label: "Year", value: "2026" },
+  { label: "Type", value: "Final-year research project · prototype" },
+];
 
 export default function AboutPage() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
-      <PageHeader
-        eyebrow="About"
-        title="Academic integrity is a teaching problem, not a policing problem"
-        description="We built AI-AIMS because the tools universities rely on had stopped detecting the thing they were bought to detect — and because catching students was never the point."
-      />
-
-      {/* Numbers */}
       <Reveal>
-        <Stagger className="grid gap-4 sm:grid-cols-3">
-          {[
-            { to: 20, suffix: "", label: "Modules", hint: "detection to administration" },
-            { to: 384, suffix: "", label: "Dimensions", hint: "per paragraph embedding" },
-            { to: 0, suffix: "", label: "Bytes uploaded", hint: "by the free browser tools" },
-          ].map((stat) => (
-            <StaggerItem key={stat.label}>
-              <Card className="text-center">
-                <p className="text-4xl font-semibold tracking-tight">
-                  <Counter to={stat.to} suffix={stat.suffix} />
-                </p>
-                <p className="mt-2 font-medium">{stat.label}</p>
-                <p className="mt-0.5 text-sm text-muted">{stat.hint}</p>
+        <PageHeader
+          eyebrow="About"
+          title="About Lume AI"
+          description="Academic integrity is a teaching problem before it is a policing problem. Lume AI is a research prototype built around that idea — and honest about which parts of it have been proven."
+        />
+      </Reveal>
+
+      {/* ── Project identity ─────────────────────────────────────────────── */}
+      <Reveal delay={0.1}>
+        <Card className="mb-16">
+          <CardHeader title="The project" icon={<Users className="size-4" />} />
+          <dl className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {PROJECT.map((entry) => (
+              <div
+                key={entry.label}
+                className="rounded-xl border border-border bg-surface-muted/40 p-4"
+              >
+                <dt className="text-xs font-semibold tracking-wide text-muted uppercase">
+                  {entry.label}
+                </dt>
+                <dd className="mt-1 text-sm font-medium">{entry.value}</dd>
+              </div>
+            ))}
+          </dl>
+          <p className="mt-4 text-xs text-muted">
+            Individual team member and supervisor names are not published here.
+            They belong in the submitted report, and inventing them would be
+            worse than omitting them.
+          </p>
+        </Card>
+      </Reveal>
+
+      {/* ── Problem & gap ────────────────────────────────────────────────── */}
+      <section className="mb-16 grid gap-5 lg:grid-cols-2">
+        <Reveal>
+          <Card className="h-full">
+            <CardHeader title="The research problem" />
+            <h3 className="text-lg font-semibold">{RESEARCH_PROBLEM.title}</h3>
+            <p className="mt-2 text-pretty text-muted">{RESEARCH_PROBLEM.body}</p>
+          </Card>
+        </Reveal>
+        <Reveal delay={0.1}>
+          <Card className="h-full">
+            <CardHeader title="The research gap" />
+            <h3 className="text-lg font-semibold">{RESEARCH_GAP.title}</h3>
+            <p className="mt-2 text-pretty text-muted">{RESEARCH_GAP.body}</p>
+          </Card>
+        </Reveal>
+      </section>
+
+      {/* ── Objectives ───────────────────────────────────────────────────── */}
+      <section className="mb-16">
+        <Reveal>
+          <SectionHeading
+            align="left"
+            eyebrow="Contribution"
+            title="What the project set out to deliver"
+            description="Each objective carries its actual status, not its intended one."
+          />
+        </Reveal>
+        <Stagger className="mt-8 grid gap-4 md:grid-cols-2">
+          {OBJECTIVES.map((objective) => (
+            <StaggerItem key={objective.id}>
+              <Card className="h-full">
+                <div className="mb-2 flex items-center justify-between gap-3">
+                  <span className="font-mono text-xs text-muted">{objective.id}</span>
+                  <MaturityBadge status={objective.status as MaturityKey} />
+                </div>
+                <h3 className="font-semibold">{objective.title}</h3>
+                <p className="mt-1.5 text-sm text-muted">{objective.detail}</p>
               </Card>
             </StaggerItem>
           ))}
         </Stagger>
-      </Reveal>
+        <Reveal delay={0.1}>
+          <p className="mt-6 text-sm text-muted">
+            The full evaluation picture — dataset status, model benchmark,
+            usability and writing studies — is on the{" "}
+            <ButtonLink href="/research" variant="ghost" className="px-1 py-0 text-sm">
+              research and evaluation
+            </ButtonLink>{" "}
+            page.
+          </p>
+        </Reveal>
+      </section>
 
-      {/* Story */}
-      <Reveal>
-        <section className="mt-24">
+      {/* ── Principles ───────────────────────────────────────────────────── */}
+      <section className="mb-16">
+        <Reveal>
           <SectionHeading
-            eyebrow="How we got here"
-            title="Four decisions that shaped the platform"
-          />
-
-          <div className="mx-auto mt-12 max-w-3xl">
-            <ol className="relative space-y-8 border-l border-border pl-8">
-              {TIMELINE.map((entry, i) => (
-                <Reveal key={entry.title} delay={i * 0.08}>
-                  <li className="relative">
-                    <span className="absolute top-1.5 -left-[2.3rem] flex size-4 items-center justify-center rounded-full border-2 border-brand bg-background">
-                      <span className="size-1.5 rounded-full bg-brand" />
-                    </span>
-                    <p className="text-xs font-semibold tracking-wide text-brand uppercase">
-                      {entry.period}
-                    </p>
-                    <h3 className="mt-1.5 text-lg font-semibold">{entry.title}</h3>
-                    <p className="mt-2 text-pretty text-muted">{entry.body}</p>
-                  </li>
-                </Reveal>
-              ))}
-            </ol>
-          </div>
-        </section>
-      </Reveal>
-
-      {/* Principles */}
-      <Reveal>
-        <section className="mt-24">
-          <SectionHeading
+            align="left"
             eyebrow="Principles"
             title="Four commitments the code has to keep"
-            description="These are not marketing lines — each one corresponds to a decision you can find in the implementation."
+            description="Each one corresponds to a decision you can find in the implementation, not a marketing line."
           />
+        </Reveal>
 
-          <Stagger className="mt-12 grid gap-5 md:grid-cols-2">
-            {PRINCIPLES.map((principle) => (
-              <StaggerItem key={principle.title}>
-                <Card interactive className="h-full">
-                  <span className="mb-4 flex size-11 items-center justify-center rounded-xl bg-brand-soft text-brand">
-                    <principle.icon className="size-5" />
-                  </span>
-                  <h3 className="text-lg font-semibold">{principle.title}</h3>
-                  <p className="mt-2 text-pretty text-muted">{principle.body}</p>
-                </Card>
-              </StaggerItem>
-            ))}
-          </Stagger>
-        </section>
-      </Reveal>
+        <Stagger className="mt-8 grid gap-5 md:grid-cols-2">
+          {PRINCIPLES.map((principle) => (
+            <StaggerItem key={principle.title}>
+              <Card interactive className="h-full">
+                <span className="mb-4 flex size-11 items-center justify-center rounded-xl bg-brand-soft text-brand">
+                  <principle.icon className="size-5" />
+                </span>
+                <h3 className="text-lg font-semibold">{principle.title}</h3>
+                <p className="mt-2 text-pretty text-muted">{principle.body}</p>
+              </Card>
+            </StaggerItem>
+          ))}
+        </Stagger>
+      </section>
 
-      {/* Honest note */}
+      {/* ── Technology ───────────────────────────────────────────────────── */}
+      <section className="mb-16">
+        <Reveal>
+          <SectionHeading
+            align="left"
+            eyebrow="Technology"
+            title="What it is built with"
+            description="Only technologies actually present in the repository are listed."
+          />
+        </Reveal>
+        <div className="mt-8">
+          <Table>
+            <thead>
+              <tr>
+                <Th>Layer</Th>
+                <Th>Technology</Th>
+              </tr>
+            </thead>
+            <tbody>
+              {TECH_STACK.map((entry) => (
+                <tr key={entry.layer}>
+                  <Td className="font-medium whitespace-nowrap">{entry.layer}</Td>
+                  <Td className="text-muted">{entry.value}</Td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </div>
+      </section>
+
+      {/* ── Honest note ──────────────────────────────────────────────────── */}
       <Reveal>
-        <section className="mt-24">
-          <Card className="mx-auto max-w-3xl">
-            <div className="flex gap-4">
-              <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-brand-soft text-brand">
-                <Compass className="size-5" />
-              </span>
-              <div>
-                <h2 className="text-lg font-semibold">Where we are honestly at</h2>
-                <p className="mt-2 text-pretty text-muted">
-                  AI-AIMS is a working platform in academic development, not a
-                  decade-old company. The detection engine, writing feedback,
-                  peer review and dashboards are built and running. Report
-                  export, SSO and the standalone department dashboard are on the
-                  roadmap, not shipped. We would rather tell you that than let
-                  you find out during a pilot.
-                </p>
-              </div>
+        <Card className="mx-auto max-w-3xl">
+          <div className="flex gap-4">
+            <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-brand-soft text-brand">
+              <Compass className="size-5" />
+            </span>
+            <div>
+              <h2 className="text-lg font-semibold">Where the project honestly stands</h2>
+              <p className="mt-2 text-pretty text-muted">
+                The detection engine, the analysis workspace, writing feedback,
+                integrity checks, peer review and the role dashboards are built
+                and running. The Ghanaian corpus has not been collected, the model
+                benchmark has therefore not been run, and neither the usability
+                study nor the writing-improvement study has taken place. The
+                harness and the schema for all three are in the repository, so the
+                figures will appear the moment the data does.
+              </p>
             </div>
-          </Card>
-        </section>
+          </div>
+        </Card>
       </Reveal>
 
-      {/* CTA */}
+      {/* ── CTA ──────────────────────────────────────────────────────────── */}
       <Reveal>
         <section className="mt-20">
           <div className="glow-ring relative rounded-3xl">
@@ -178,18 +232,18 @@ export default function AboutPage() {
                   className="mx-auto mb-4 opacity-80"
                 />
                 <h2 className="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">
-                  Want to try it on your own department?
+                  Illuminate. Analyse. Improve.
                 </h2>
                 <p className="mx-auto mt-3 max-w-xl text-muted">
-                  Start with one course for a term. We will help you set it up
-                  and you can decide from real numbers.
+                  Open the workspace and run Lume AI on a document of your own, or
+                  read how the system is put together first.
                 </p>
                 <div className="mt-7 flex flex-wrap justify-center gap-3">
-                  <ButtonLink href="/contact" variant="gradient" className="px-6 py-3">
-                    Get in touch
+                  <ButtonLink href="/register" variant="gradient" className="px-6 py-3">
+                    Explore Lume AI
                   </ButtonLink>
-                  <ButtonLink href="/features" variant="secondary" className="px-6 py-3">
-                    See the full feature list
+                  <ButtonLink href="/architecture" variant="secondary" className="px-6 py-3">
+                    System architecture
                   </ButtonLink>
                 </div>
               </div>

@@ -5,7 +5,7 @@ import { Card, CardHeader, PageHeader, Stat, Table, Td, Th } from "@/components/
 import { riskLevelFor } from "@/lib/risk";
 import { relativeTime } from "@/lib/format";
 
-export const metadata = { title: "Admin · AI-AIMS" };
+export const metadata = { title: "Admin" };
 
 export default async function AdminDashboard() {
   await requireRole("ADMIN");

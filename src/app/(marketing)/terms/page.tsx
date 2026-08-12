@@ -2,8 +2,8 @@ import Link from "next/link";
 import { LegalPage } from "@/components/marketing/legal-page";
 
 export const metadata = {
-  title: "Terms of service · AI-AIMS",
-  description: "The terms under which you may use AI-AIMS and its free tools.",
+  title: "Terms of service",
+  description: "The terms under which you may use Lume AI and its free tools.",
 };
 
 export default function TermsPage() {
@@ -12,7 +12,7 @@ export default function TermsPage() {
       eyebrow="Legal"
       title="Terms of service"
       updated="19 July 2026"
-      intro="The rules for using AI-AIMS. Where these terms and your institution's own academic regulations disagree, your institution's regulations win."
+      intro="The rules for using Lume AI. Where these terms and your institution's own academic regulations disagree, your institution's regulations win."
       sections={[
         {
           id: "acceptance",
@@ -21,7 +21,7 @@ export default function TermsPage() {
             <>
               <p>
                 By creating an account or using the free tools you accept these
-                terms. If you are using AI-AIMS through your university, your
+                terms. If you are using Lume AI through your university, your
                 institution&apos;s agreement with us also applies, and its academic
                 regulations take precedence over anything here.
               </p>

@@ -5,7 +5,7 @@ import { getCurrentUser, dashboardPath } from "@/lib/auth";
 import { Alert } from "@/components/ui";
 import { RegisterForm } from "./register-form";
 
-export const metadata = { title: "Create account · AI-AIMS" };
+export const metadata = { title: "Create account" };
 
 export default async function RegisterPage() {
   const user = await getCurrentUser();

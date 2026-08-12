@@ -12,7 +12,7 @@ import {
 } from "@/components/ui";
 import { formatDateTime, relativeTime } from "@/lib/format";
 
-export const metadata = { title: "Assignments · AI-AIMS" };
+export const metadata = { title: "Assignments" };
 
 export default async function AssignmentsPage() {
   const user = await requireRole("STUDENT");

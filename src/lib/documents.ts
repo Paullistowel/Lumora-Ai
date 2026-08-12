@@ -3,10 +3,13 @@
  * Extract → clean → paragraph-detect → sentence-tokenize.
  */
 
-export type SupportedType = "pdf" | "docx" | "txt" | "md";
+export type SupportedType = "pdf" | "docx" | "doc" | "txt" | "md";
 
-export const ACCEPTED_EXTENSIONS = [".pdf", ".docx", ".txt", ".md"] as const;
+export const ACCEPTED_EXTENSIONS = [".pdf", ".docx", ".doc", ".txt", ".md"] as const;
 export const MAX_FILE_BYTES = 15 * 1024 * 1024;
+
+/** Human-readable list for upload hints, e.g. "PDF, DOCX, DOC, TXT or MD". */
+export const ACCEPTED_LABEL = "PDF, DOCX, DOC, TXT or MD";
 
 export function detectType(fileName: string): SupportedType | null {
   const ext = fileName.slice(fileName.lastIndexOf(".")).toLowerCase();
@@ -15,6 +18,8 @@ export function detectType(fileName: string): SupportedType | null {
       return "pdf";
     case ".docx":
       return "docx";
+    case ".doc":
+      return "doc";
     case ".txt":
       return "txt";
     case ".md":
@@ -43,6 +48,21 @@ export async function extractText(
       const mammoth = await import("mammoth");
       const { value } = await mammoth.extractRawText({ buffer });
       return value;
+    }
+    case "doc": {
+      // Legacy binary .doc is a different container from .docx. mammoth reads
+      // the OOXML form only, so a genuine Word 97–2003 file lands in the catch
+      // and gets an instruction the user can act on rather than a parser error.
+      try {
+        const mammoth = await import("mammoth");
+        const { value } = await mammoth.extractRawText({ buffer });
+        if (value.trim().length > 0) return value;
+      } catch {
+        // fall through to the guidance below
+      }
+      throw new Error(
+        "This looks like a legacy Word 97–2003 file. Open it in Word or Google Docs and save it as .docx or .pdf, then upload again.",
+      );
     }
     case "md":
       return stripMarkdown(buffer.toString("utf8"));

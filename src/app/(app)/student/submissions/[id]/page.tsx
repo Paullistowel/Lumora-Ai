@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import { requireRole } from "@/lib/auth";
 import { db } from "@/lib/db";
 import {
-  Alert,
   Badge,
   Button,
   ButtonLink,
@@ -11,7 +10,8 @@ import {
   CardHeader,
   PageHeader,
 } from "@/components/ui";
-import { Sparkles, SpellCheck } from "lucide-react";
+import { Download, RefreshCw, Sparkles, SpellCheck } from "lucide-react";
+import { SubmissionProgress } from "@/components/submission-progress";
 import { SimilarityReport, type ReportParagraph } from "@/components/similarity-report";
 import { WritingFeedbackPanel } from "@/components/writing-feedback";
 import type { WritingIssue } from "@/lib/writing";
@@ -128,12 +128,22 @@ export default async function SubmissionPage({
         title={submission.assignment.title}
         description={`${submission.assignment.course.code} · version ${submission.version} · ${formatDateTime(submission.submittedAt)}`}
         action={
-          <form action={recheckSubmission}>
-            <input type="hidden" name="submissionId" value={submission.id} />
-            <Button type="submit" variant="secondary">
-              Request recheck
-            </Button>
-          </form>
+          <div className="flex flex-wrap gap-2">
+            <ButtonLink
+              href={`/api/files/submission/${submission.id}`}
+              variant="secondary"
+            >
+              <Download className="size-4" />
+              Download
+            </ButtonLink>
+            <form action={recheckSubmission}>
+              <input type="hidden" name="submissionId" value={submission.id} />
+              <Button type="submit" variant="secondary">
+                <RefreshCw className="size-4" />
+                Recheck
+              </Button>
+            </form>
+          </div>
         }
       />
 
@@ -152,18 +162,15 @@ export default async function SubmissionPage({
         ) : null}
       </div>
 
-      {submission.status === "FAILED" ? (
+      {submission.status === "PENDING" ||
+      submission.status === "PROCESSING" ||
+      submission.status === "FAILED" ? (
         <div className="mb-5">
-          <Alert tone="error">
-            {submission.statusDetail ?? "Processing failed."} Use “Request
-            recheck” to try again.
-          </Alert>
-        </div>
-      ) : null}
-
-      {submission.status === "PENDING" || submission.status === "PROCESSING" ? (
-        <div className="mb-5">
-          <Alert>Your document is still being analysed. Refresh in a moment.</Alert>
+          <SubmissionProgress
+            submissionId={submission.id}
+            initialStatus={submission.status as "PENDING" | "PROCESSING" | "COMPLETE" | "FAILED"}
+            initialDetail={submission.statusDetail}
+          />
         </div>
       ) : null}
 

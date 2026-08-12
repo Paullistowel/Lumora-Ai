@@ -1,4 +1,4 @@
-// AI-AIMS — AI Academic Integrity & Assignment Management Platform
+// Lume AI — AI Academic Integrity & Assignment Management Platform
 // Dev datasource is SQLite; swap `provider` to "postgresql" for production.
 
 generator client {
@@ -48,6 +48,9 @@ model User {
   notifications      Notification[]
   auditLogs          AuditLog[]
   createdAssignments Assignment[] @relation("AssignmentAuthor")
+  analyses           Analysis[]
+  reviewDocuments    ReviewDocument[] @relation("ReviewDocumentOwner")
+  documentReviews    DocumentReview[] @relation("DocumentReviewer")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -89,8 +92,9 @@ model Course {
   lecturerId   String?
   lecturer     User?      @relation("CourseLecturer", fields: [lecturerId], references: [id])
 
-  enrollments Enrollment[]
-  assignments Assignment[]
+  enrollments     Enrollment[]
+  assignments     Assignment[]
+  reviewDocuments ReviewDocument[]
 
   createdAt DateTime @default(now())
 
@@ -434,4 +438,148 @@ model ContactMessage {
   createdAt DateTime @default(now())
 
   @@index([handled, createdAt])
+}
+
+
+// ─────────────────────────────────────────────
+// Lume AI Analysis Workspace
+//
+// Ad-hoc document and text analysis, available to students and lecturers
+// alike and independent of the formal assignment-submission workflow.
+// ─────────────────────────────────────────────
+
+model Analysis {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  title  String
+  source String // UPLOAD | TEXT
+
+  fileName   String?
+  fileType   String? // pdf | docx | doc | txt | md
+  fileSize   Int     @default(0)
+  storageKey String?
+
+  text      String @default("")
+  wordCount Int    @default(0)
+
+  // JSON array of requested modules: SIMILARITY | WRITING | INTEGRITY | AI_STYLE
+  modules String @default("[]")
+  // REFERENCES | PLATFORM — what the document was compared against.
+  corpusScope String @default("REFERENCES")
+
+  // PENDING | PROCESSING | COMPLETE | FAILED
+  status String @default("PENDING")
+  // QUEUED | EXTRACT | SEGMENT | EMBED | COMPARE | WRITING | REPORT | DONE
+  stage        String  @default("QUEUED")
+  statusDetail String?
+
+  embeddingBackend String? // transformer | lexical
+  embeddingModel   String?
+  durationMs       Int?
+
+  similarityScore Float?
+  riskLevel       String?
+  confidence      Float?
+  writingScore    Float?
+  aiStyleScore    Float?
+
+  // Full report payload, serialised JSON. See lib/analysis.ts for the shape.
+  report String?
+
+  references AnalysisReference[]
+
+  createdAt   DateTime  @default(now())
+  completedAt DateTime?
+
+  @@index([userId, createdAt])
+  @@index([status])
+}
+
+/** A source text the user supplied for the document to be compared against. */
+model AnalysisReference {
+  id         String   @id @default(cuid())
+  analysisId String
+  analysis   Analysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
+
+  label String
+  text  String
+  order Int    @default(0)
+
+  @@index([analysisId])
+}
+
+
+// ─────────────────────────────────────────────
+// Peer review exchange
+//
+// Student-initiated peer review: a student uploads a document, asks for
+// feedback, and other students review it. Independent of the assignment
+// workflow above, which is lecturer-driven and rubric-scored.
+// ─────────────────────────────────────────────
+
+model ReviewDocument {
+  id      String @id @default(cuid())
+  ownerId String
+  owner   User   @relation("ReviewDocumentOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+
+  title       String
+  description String?
+
+  courseId String?
+  course   Course? @relation(fields: [courseId], references: [id], onDelete: SetNull)
+
+  fileName   String
+  fileType   String // pdf | docx | doc | txt | md
+  fileSize   Int
+  storageKey String
+
+  extractedText String @default("")
+  wordCount     Int    @default(0)
+
+  // PENDING | PROCESSING | OPEN | IN_REVIEW | COMPLETE | FAILED
+  status       String  @default("PENDING")
+  statusDetail String?
+
+  /// How many peer reviews the author is asking for.
+  reviewsRequested Int @default(2)
+
+  reviews DocumentReview[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([ownerId])
+  @@index([status])
+}
+
+model DocumentReview {
+  id         String         @id @default(cuid())
+  documentId String
+  document   ReviewDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  reviewerId String
+  reviewer   User           @relation("DocumentReviewer", fields: [reviewerId], references: [id], onDelete: Cascade)
+
+  // ASSIGNED | SUBMITTED
+  status String @default("ASSIGNED")
+
+  /// JSON map of criterion key → 1–5 rating.
+  ratings String  @default("{}")
+  overall Float?
+
+  strengths    String?
+  improvements String?
+  comment      String?
+
+  // Assessment of the review itself, same idea as PeerReview.qualityScore.
+  qualityScore     Float?
+  qualityBreakdown String?
+
+  assignedAt  DateTime  @default(now())
+  submittedAt DateTime?
+
+  @@unique([documentId, reviewerId])
+  @@index([reviewerId, status])
+  @@index([documentId])
 }

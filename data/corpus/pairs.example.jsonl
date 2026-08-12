@@ -1,0 +1,4 @@
+// Illustrative format only. This file is NOT read by the benchmark — rename to
+// pairs.jsonl once the file holds real, consented, anonymised assignment pairs.
+{"id":"example-001","a":"Replace with the full text of the original passage.","b":"Replace with the full text of the passage derived from it.","label":1,"kind":"paraphrase","source":"COHORT-ID"}
+{"id":"example-002","a":"Replace with a passage on some topic.","b":"Replace with an independently written passage on the same topic.","label":0,"kind":"same-topic","source":"COHORT-ID"}

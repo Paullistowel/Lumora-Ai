@@ -8,7 +8,7 @@ import { Badge, ButtonLink, Card, PageHeader, SectionHeading } from "@/component
 import { RISK_BANDS } from "@/lib/risk";
 
 export const metadata = {
-  title: "Features · AI-AIMS",
+  title: "Features",
   description:
     "Semantic plagiarism detection, writing feedback, peer review, rubrics, analytics and audit — the full platform, module by module.",
 };

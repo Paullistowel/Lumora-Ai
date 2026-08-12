@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { getCurrentUser, dashboardPath } from "@/lib/auth";
 import { LoginForm } from "./login-form";
 
-export const metadata = { title: "Sign in · AI-AIMS" };
+export const metadata = { title: "Sign in" };
 
 export default async function LoginPage() {
   const user = await getCurrentUser();

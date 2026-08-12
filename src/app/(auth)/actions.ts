@@ -121,7 +121,7 @@ export async function verifyEmail(
   await notify({
     userId: user.id,
     type: "SYSTEM",
-    title: "Welcome to AI-AIMS",
+    title: "Welcome to Lume AI",
     body: "Your account is verified. Enrol in your courses to start submitting work.",
     link: "/student/courses",
   });

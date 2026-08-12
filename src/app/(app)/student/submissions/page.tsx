@@ -6,7 +6,7 @@ import { RiskBadge } from "@/components/similarity-report";
 import type { RiskLevel } from "@/lib/risk";
 import { formatDateTime } from "@/lib/format";
 
-export const metadata = { title: "My submissions · AI-AIMS" };
+export const metadata = { title: "My submissions" };
 
 export default async function SubmissionsPage() {
   const user = await requireRole("STUDENT");

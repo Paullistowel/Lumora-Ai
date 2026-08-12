@@ -2,7 +2,7 @@ import { Badge, Table, Td, Th } from "@/components/ui";
 
 const COOKIES = [
   {
-    name: "aims_session",
+    name: "lume_session",
     purpose: "Keeps you signed in. Revoked server-side on sign-out.",
     duration: "7 days",
     type: "Necessary",

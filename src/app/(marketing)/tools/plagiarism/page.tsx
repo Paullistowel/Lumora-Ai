@@ -2,7 +2,7 @@ import { PlagiarismTool } from "./plagiarism-tool";
 import { PageHeader } from "@/components/ui";
 
 export const metadata = {
-  title: "Free plagiarism checker · AI-AIMS",
+  title: "Free plagiarism checker",
   description:
     "Compare your draft against your own sources and see which paragraphs overlap. Runs entirely in your browser.",
 };

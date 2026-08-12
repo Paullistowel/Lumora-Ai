@@ -9,8 +9,9 @@ import type { PublicFormState } from "@/lib/form-state";
 import { Alert, Button, Field, Input, Select, Textarea } from "@/components/ui";
 
 const TOPICS = [
-  "Institutional licensing",
   "Pilot in one department",
+  "Research question",
+  "Security",
   "On-premise deployment",
   "Technical question",
   "Accessibility or data request",

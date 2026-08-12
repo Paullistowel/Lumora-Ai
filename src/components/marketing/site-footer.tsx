@@ -1,24 +1,24 @@
 import Link from "next/link";
-import { ShieldCheck } from "lucide-react";
 import { NewsletterForm } from "./newsletter";
+import { LumeLogo } from "../brand";
 
 const COLUMNS: { heading: string; links: { href: string; label: string }[] }[] = [
   {
-    heading: "Product",
+    heading: "Platform",
     links: [
       { href: "/features", label: "Features" },
-      { href: "/pricing", label: "Pricing" },
+      { href: "/how-it-works", label: "How it works" },
       { href: "/security", label: "Security" },
       { href: "/changelog", label: "Changelog" },
     ],
   },
   {
-    heading: "Free tools",
+    heading: "Research",
     links: [
-      { href: "/tools/grammar", label: "Grammar checker" },
-      { href: "/tools/plagiarism", label: "Plagiarism checker" },
-      { href: "/tools/humanizer", label: "AI humanizer" },
-      { href: "/tools", label: "All tools" },
+      { href: "/research", label: "Research & evaluation" },
+      { href: "/architecture", label: "System architecture" },
+      { href: "/tools", label: "Public tools" },
+      { href: "/integrity", label: "Integrity guide" },
     ],
   },
   {
@@ -27,7 +27,7 @@ const COLUMNS: { heading: string; links: { href: string; label: string }[] }[] =
       { href: "/about", label: "About" },
       { href: "/contact", label: "Contact" },
       { href: "/help", label: "Help centre" },
-      { href: "/integrity", label: "Integrity guide" },
+      { href: "/changelog", label: "Changelog" },
     ],
   },
   {
@@ -47,17 +47,15 @@ export function SiteFooter() {
       <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6">
         <div className="grid gap-12 lg:grid-cols-[1.4fr_2.6fr]">
           <div>
-            <Link href="/" className="focus-ring inline-flex items-center gap-2 rounded-lg">
-              <span className="flex size-8 items-center justify-center rounded-xl bg-gradient-to-br from-brand to-accent text-white">
-                <ShieldCheck className="size-4" />
-              </span>
-              <span className="font-semibold tracking-tight">AI-AIMS</span>
-            </Link>
+            <LumeLogo showTagline />
 
             <p className="mt-4 max-w-xs text-sm text-muted">
-              Semantic plagiarism detection, writing feedback and anonymous peer
-              review — built for universities that want to teach integrity, not
-              just police it.
+              AI-powered academic integrity and peer review. Intelligent document
+              analysis, semantic plagiarism detection, academic writing feedback
+              and structured peer review for higher education.
+            </p>
+            <p className="mt-3 text-xs text-muted">
+              Research Prototype · Group 4 · KNUST · 2026
             </p>
 
             <div className="mt-6 max-w-sm">
@@ -91,14 +89,11 @@ export function SiteFooter() {
 
         <div className="mt-12 flex flex-col gap-4 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-xs text-muted">
-            © {new Date().getFullYear()} AI-AIMS. Built as a final-year academic
-            integrity platform.
+            © {new Date().getFullYear()} Lume AI — a final-year research project.
+            Not a commercial product.
           </p>
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-muted">
-            <span className="inline-flex items-center gap-1.5">
-              <span className="size-1.5 rounded-full bg-risk-original" />
-              All systems operational
-            </span>
+            <Link href="/research" className="hover:text-brand">Research</Link>
             <Link href="/privacy" className="hover:text-brand">Privacy</Link>
             <Link href="/terms" className="hover:text-brand">Terms</Link>
             <Link href="/cookies" className="hover:text-brand">Cookies</Link>

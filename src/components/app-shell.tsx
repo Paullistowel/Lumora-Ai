@@ -5,18 +5,23 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import {
-  Bell, BookOpen, Building2, ClipboardList, FileText, GraduationCap,
-  LayoutDashboard, LogOut, Menu, ScrollText, Settings, ShieldCheck,
-  Sparkles, Users, X,
+  BarChart3, Bell, BookOpen, Building2, ClipboardList, FileText,
+  FlaskConical, GitCompare, GraduationCap, LayoutDashboard, LineChart, LogOut,
+  FolderOpen, Menu, ScanSearch, ScrollText, Settings, ShieldCheck, Sparkles,
+  Users, X,
 } from "lucide-react";
 import type { Role, SessionUser } from "@/lib/auth";
 import { ThemeToggle } from "./theme-toggle";
+import { LumeLogo, LumeMark } from "./brand";
 import { cn } from "./ui";
 import { initials } from "@/lib/format";
 import { OnboardingTour } from "./onboarding/tour";
 
 const ICONS = {
   dashboard: LayoutDashboard,
+  analyse: ScanSearch,
+  reports: FileText,
+  documents: FolderOpen,
   assignments: ClipboardList,
   submissions: FileText,
   reviews: Users,
@@ -27,6 +32,10 @@ const ICONS = {
   audit: ScrollText,
   settings: Settings,
   tools: Sparkles,
+  analytics: BarChart3,
+  progress: LineChart,
+  research: FlaskConical,
+  compare: GitCompare,
 } as const;
 
 type NavItem = {
@@ -40,28 +49,39 @@ type NavItem = {
 const NAV: Record<Role, NavItem[]> = {
   STUDENT: [
     { href: "/student", label: "Dashboard", icon: "dashboard" },
+    { href: "/analyse", label: "Analyse", icon: "analyse", tour: "nav-analyse" },
     { href: "/student/assignments", label: "Assignments", icon: "assignments", tour: "nav-assignments" },
     { href: "/student/submissions", label: "My submissions", icon: "submissions", tour: "nav-submissions" },
-    { href: "/student/reviews", label: "Peer reviews", icon: "reviews", tour: "nav-reviews" },
+    { href: "/reports", label: "Reports", icon: "reports" },
+    { href: "/documents", label: "Documents", icon: "documents" },
+    { href: "/student/peer-review", label: "Peer review", icon: "reviews", tour: "nav-reviews" },
+    { href: "/student/progress", label: "Writing progress", icon: "progress" },
     { href: "/student/courses", label: "Courses", icon: "courses" },
     { href: "/student/integrity", label: "Integrity guide", icon: "integrity", tour: "nav-integrity" },
-    { href: "/tools", label: "Writing tools", icon: "tools" },
     { href: "/settings", label: "Settings", icon: "settings" },
   ],
   LECTURER: [
     { href: "/lecturer", label: "Dashboard", icon: "dashboard" },
+    { href: "/analyse", label: "Analyse", icon: "analyse", tour: "nav-analyse" },
+    { href: "/reports", label: "My reports", icon: "reports" },
+    { href: "/documents", label: "Documents", icon: "documents" },
+    { href: "/lecturer/submissions", label: "Submissions & reports", icon: "submissions" },
+    { href: "/lecturer/analytics", label: "Analytics", icon: "analytics" },
+    { href: "/lecturer/compare", label: "Compare documents", icon: "compare" },
     { href: "/lecturer/courses", label: "Courses", icon: "courses", tour: "nav-courses" },
     { href: "/lecturer/assignments", label: "Assignments", icon: "assignments", tour: "nav-assignments" },
-    { href: "/lecturer/rubrics", label: "Rubrics", icon: "submissions", tour: "nav-rubrics" },
-    { href: "/tools", label: "Writing tools", icon: "tools" },
+    { href: "/lecturer/rubrics", label: "Rubrics", icon: "reports", tour: "nav-rubrics" },
+    { href: "/research", label: "Research", icon: "research" },
     { href: "/settings", label: "Settings", icon: "settings" },
   ],
   ADMIN: [
     { href: "/admin", label: "Dashboard", icon: "dashboard" },
+    { href: "/analyse", label: "Analyse", icon: "analyse" },
     { href: "/admin/users", label: "Users", icon: "students", tour: "nav-users" },
     { href: "/admin/departments", label: "Departments", icon: "departments", tour: "nav-departments" },
     { href: "/admin/courses", label: "Courses", icon: "courses" },
     { href: "/admin/audit", label: "Audit log", icon: "audit", tour: "nav-audit" },
+    { href: "/research", label: "Research", icon: "research" },
     { href: "/settings", label: "Settings", icon: "settings" },
   ],
 };
@@ -86,11 +106,12 @@ export function AppShell({
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const items = NAV[user.role];
-  const roleRoot = `/${user.role.toLowerCase()}`;
 
-  useEffect(() => {
-    setMobileOpen(false);
-  }, [pathname]);
+  const activeHref = items
+    .filter(
+      (item) => pathname === item.href || pathname.startsWith(`${item.href}/`),
+    )
+    .sort((a, b) => b.href.length - a.href.length)[0]?.href;
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : "";
@@ -101,16 +122,16 @@ export function AppShell({
     <nav className="flex flex-col gap-0.5" aria-label="Main">
       {items.map((item) => {
         const Icon = ICONS[item.icon];
-        // Exact match for a section root; prefix match for its children.
-        const active =
-          pathname === item.href ||
-          (item.href !== roleRoot && pathname.startsWith(`${item.href}/`));
+        // Longest matching href wins, so /analyse/history highlights "My
+        // reports" rather than both it and "Analyse".
+        const active = item.href === activeHref;
 
         return (
           <Link
             key={item.href}
             href={item.href}
             data-tour={item.tour}
+            onClick={() => setMobileOpen(false)}
             aria-current={active ? "page" : undefined}
             className={cn(
               "focus-ring group relative flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm transition-colors",
@@ -141,12 +162,7 @@ export function AppShell({
       <div className="flex min-h-dvh">
         {/* Desktop sidebar */}
         <aside className="hidden w-64 shrink-0 flex-col border-r border-border bg-surface p-4 lg:flex">
-          <Link href="/" className="focus-ring group mb-7 flex items-center gap-2 rounded-lg px-2">
-            <span className="flex size-8 items-center justify-center rounded-xl bg-gradient-to-br from-brand to-accent text-white transition-transform group-hover:scale-105">
-              <ShieldCheck className="size-4" />
-            </span>
-            <span className="font-semibold tracking-tight">AI-AIMS</span>
-          </Link>
+          <LumeLogo className="mb-7 px-2" />
           {nav}
           <div className="mt-auto pt-4">
             <UserCard user={user} />
@@ -176,7 +192,10 @@ export function AppShell({
                 className="relative flex h-full w-72 max-w-[84vw] flex-col border-r border-border bg-surface p-4"
               >
                 <div className="mb-6 flex items-center justify-between px-2">
-                  <span className="font-semibold tracking-tight">AI-AIMS</span>
+                  <span className="flex items-center gap-2 font-semibold tracking-tight">
+                    <LumeMark className="size-6" />
+                    Lume AI
+                  </span>
                   <button
                     type="button"
                     onClick={() => setMobileOpen(false)}
@@ -237,7 +256,7 @@ export function AppShell({
             </div>
           </header>
 
-          <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-7 sm:px-6">
+          <main id="main" className="mx-auto w-full max-w-6xl flex-1 px-4 py-7 sm:px-6">
             {children}
           </main>
         </div>

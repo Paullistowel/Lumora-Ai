@@ -9,7 +9,7 @@ import {
 } from "@/components/ui";
 import { RubricForm } from "./rubric-form";
 
-export const metadata = { title: "Rubrics · AI-AIMS" };
+export const metadata = { title: "Rubrics" };
 
 export default async function RubricsPage() {
   await requireRole("LECTURER");

@@ -2,7 +2,7 @@ import { IntegrityGuide } from "@/components/integrity-guide";
 import { PageHeader } from "@/components/ui";
 
 export const metadata = {
-  title: "Academic integrity guide · AI-AIMS",
+  title: "Academic integrity guide",
   description:
     "What plagiarism actually is, how similarity scores are calculated, and how to cite in APA, IEEE, Harvard and MLA.",
 };

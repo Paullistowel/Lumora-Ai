@@ -1,13 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, Home, LifeBuoy, Search } from "lucide-react";
+import { ArrowLeft, FlaskConical, Home, LifeBuoy, ScanSearch } from "lucide-react";
+import { LumeLogo } from "@/components/brand";
 import { ButtonLink } from "@/components/ui";
 
-export const metadata = { title: "Page not found · AI-AIMS" };
+export const metadata = { title: "Page not found" };
 
 const SUGGESTIONS = [
   { href: "/", label: "Home", icon: Home },
-  { href: "/tools", label: "Free writing tools", icon: Search },
+  { href: "/analyse", label: "Analysis workspace", icon: ScanSearch },
+  { href: "/research", label: "Research & evaluation", icon: FlaskConical },
   { href: "/help", label: "Help centre", icon: LifeBuoy },
 ] as const;
 
@@ -18,6 +20,8 @@ export default function NotFound() {
       <div className="grid-lines" aria-hidden />
 
       <div className="relative">
+        <LumeLogo className="mb-8 justify-center" />
+
         <Image
           src="/img/not-found.svg"
           alt=""

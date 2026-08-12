@@ -3,7 +3,7 @@ import { db } from "@/lib/db";
 import { Badge, Button, PageHeader, Table, Td, Th } from "@/components/ui";
 import { formatDateTime } from "@/lib/format";
 
-export const metadata = { title: "Audit log · AI-AIMS" };
+export const metadata = { title: "Audit log" };
 
 const PAGE_SIZE = 50;
 

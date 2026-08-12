@@ -1,5 +1,6 @@
 "use server";
 
+import { after } from "next/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
@@ -9,6 +10,7 @@ import { notify } from "@/lib/notify";
 import { putFile } from "@/lib/storage";
 import {
   ACCEPTED_EXTENSIONS,
+  ACCEPTED_LABEL,
   MAX_FILE_BYTES,
   detectType,
 } from "@/lib/documents";
@@ -30,12 +32,16 @@ export async function submitAssignment(
     return { error: "Choose a file to submit." };
   }
   if (file.size > MAX_FILE_BYTES) {
-    return { error: `File exceeds the ${MAX_FILE_BYTES / 1024 / 1024}MB limit.` };
+    return {
+      error: `That file is ${(file.size / 1024 / 1024).toFixed(1)}MB. The limit is ${MAX_FILE_BYTES / 1024 / 1024}MB.`,
+    };
   }
 
   const fileType = detectType(file.name);
   if (!fileType) {
-    return { error: `Unsupported file type. Accepted: ${ACCEPTED_EXTENSIONS.join(", ")}` };
+    return {
+      error: `Lume AI cannot read that file type. Upload ${ACCEPTED_LABEL} (${ACCEPTED_EXTENSIONS.join(", ")}).`,
+    };
   }
 
   const assignment = await db.assignment.findUnique({
@@ -108,9 +114,15 @@ export async function submitAssignment(
     detail: `${assignment.title} v${submission.version}${isLate ? " (late)" : ""}`,
   });
 
-  await processSubmission(submission.id);
-  // A new document changes everyone else's similarity picture.
-  await refreshPeerScores(assignmentId, submission.id);
+  // Processing runs after the response. Embedding a document — and, on a cold
+  // server, loading the model first — takes long enough that blocking the
+  // submit button on it reads as a hung page. The submission page reports the
+  // real status instead.
+  after(async () => {
+    await processSubmission(submission.id);
+    // A new document changes everyone else's similarity picture.
+    await refreshPeerScores(assignmentId, submission.id);
+  });
 
   if (assignment.course.lecturerId) {
     await notify({
@@ -145,7 +157,12 @@ export async function recheckSubmission(formData: FormData): Promise<void> {
     entityId: submissionId,
   });
 
-  await processSubmission(submissionId);
+  await db.submission.update({
+    where: { id: submissionId },
+    data: { status: "PENDING", statusDetail: null },
+  });
+
+  after(() => processSubmission(submissionId));
   revalidatePath(`/student/submissions/${submissionId}`);
 }
 

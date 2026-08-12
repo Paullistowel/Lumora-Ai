@@ -12,7 +12,7 @@ import {
 import { assignLecturer } from "../actions";
 import { CourseForm } from "./course-form";
 
-export const metadata = { title: "Courses · AI-AIMS" };
+export const metadata = { title: "Courses" };
 
 export default async function AdminCoursesPage() {
   await requireRole("ADMIN");

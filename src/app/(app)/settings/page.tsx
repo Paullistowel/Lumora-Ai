@@ -7,7 +7,7 @@ import { restartOnboarding } from "@/components/onboarding/actions";
 import { formatDateTime } from "@/lib/format";
 import { ProfileForm, PasswordForm, type SettingsState } from "./forms";
 
-export const metadata = { title: "Settings · AI-AIMS" };
+export const metadata = { title: "Settings" };
 
 async function updateProfile(
   _prev: SettingsState,

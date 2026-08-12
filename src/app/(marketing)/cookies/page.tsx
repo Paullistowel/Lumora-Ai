@@ -3,9 +3,9 @@ import { LegalPage } from "@/components/marketing/legal-page";
 import { CookieTable } from "./cookie-table";
 
 export const metadata = {
-  title: "Cookie policy · AI-AIMS",
+  title: "Cookie policy",
   description:
-    "Every cookie AI-AIMS sets, what it does, how long it lasts, and how to change your choices.",
+    "Every cookie Lume AI sets, what it does, how long it lasts, and how to change your choices.",
 };
 
 export default function CookiesPage() {
@@ -27,7 +27,7 @@ export default function CookiesPage() {
           body: (
             <>
               <p>
-                <strong>aims_session</strong> holds your signed session token.
+                <strong>lume_session</strong> holds your signed session token.
                 Without it you cannot stay logged in. It is HTTP-only, so page
                 scripts cannot read it, and it is revoked server-side the moment
                 you sign out or change your password.

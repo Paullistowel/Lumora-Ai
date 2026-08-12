@@ -7,7 +7,7 @@ import { SignJWT, jwtVerify } from "jose";
 import { createHash, randomInt } from "node:crypto";
 import { db } from "./db";
 
-export const SESSION_COOKIE = "aims_session";
+export const SESSION_COOKIE = "lume_session";
 const SESSION_DAYS = 7;
 
 export type Role = "STUDENT" | "LECTURER" | "ADMIN";
@@ -129,7 +129,10 @@ export async function getCurrentUser(): Promise<SessionUser | null> {
   });
   if (!user || user.suspended) return null;
 
-  const { suspended: _suspended, ...rest } = user;
+  // `suspended` is selected only for the guard above; it never reaches the
+  // session object handed to components.
+  const { suspended, ...rest } = user;
+  void suspended;
   return { ...rest, role: rest.role as Role };
 }
 

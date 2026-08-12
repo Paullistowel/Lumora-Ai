@@ -71,14 +71,12 @@ export function LegalPage({
           <Card className="p-6 sm:p-8">
             <h2 className="mb-2 text-lg font-semibold">Questions about this policy?</h2>
             <p className="text-muted">
-              Write to{" "}
-              <a href="mailto:privacy@ai-aims.example" className="font-medium text-brand hover:underline">
-                privacy@ai-aims.example
-              </a>{" "}
-              or use the{" "}
+              Use the{" "}
               <Link href="/contact" className="font-medium text-brand hover:underline">
                 contact form
               </Link>
+              , or contact the data protection officer at the institution running
+              this deployment
               . We reply to data requests within 30 days, and usually far sooner.
             </p>
           </Card>

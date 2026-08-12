@@ -11,7 +11,7 @@ import {
 } from "@/components/ui";
 import { relativeTime } from "@/lib/format";
 
-export const metadata = { title: "Notifications · AI-AIMS" };
+export const metadata = { title: "Notifications" };
 
 async function markAllRead() {
   "use server";

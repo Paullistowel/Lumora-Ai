@@ -177,7 +177,7 @@ export function PlagiarismTool() {
     <div className="space-y-6">
       <Alert tone="info" title="How this differs from the full platform">
         This browser tool compares your draft against sources you paste in,
-        using word-overlap similarity. The full AI-AIMS engine compares meaning
+        using word-overlap similarity. The full Lume AI engine compares meaning
         with transformer embeddings across an entire cohort&apos;s submissions —
         which is what catches a paraphrase that shares no wording.{" "}
         <span className="font-medium">Nothing you paste here is uploaded.</span>

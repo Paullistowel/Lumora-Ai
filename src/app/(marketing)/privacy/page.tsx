@@ -2,9 +2,9 @@ import Link from "next/link";
 import { LegalPage } from "@/components/marketing/legal-page";
 
 export const metadata = {
-  title: "Privacy policy · AI-AIMS",
+  title: "Privacy policy",
   description:
-    "What data AI-AIMS collects, why, how long it is kept, and the rights you have over it.",
+    "What data Lume AI collects, why, how long it is kept, and the rights you have over it.",
 };
 
 export default function PrivacyPage() {
@@ -26,7 +26,7 @@ export default function PrivacyPage() {
                 there is no endpoint to send it to.
               </li>
               <li>
-                If your institution runs AI-AIMS on its own servers, we hold
+                If your institution runs Lume AI on its own servers, we hold
                 <strong> no student data at all</strong>. Your university is the
                 data controller.
               </li>
@@ -41,7 +41,7 @@ export default function PrivacyPage() {
           body: (
             <>
               <p>
-                Where your university deploys AI-AIMS on its own infrastructure,
+                Where your university deploys Lume AI on its own infrastructure,
                 <strong> the university is the data controller</strong> and we are
                 a processor with no access to submissions. Direct subject access
                 requests to your institution&apos;s data protection officer.
@@ -142,7 +142,7 @@ export default function PrivacyPage() {
                 statutory retention periods. We will always say which exemption
                 applies rather than simply refusing.
               </p>
-              <p>Requests go to your institution&apos;s DPO, or to <a href="mailto:privacy@ai-aims.example">privacy@ai-aims.example</a> for website data. We respond within 30 days.</p>
+              <p>Requests go to your institution&apos;s data protection officer. For data held by this website, use the <Link href="/contact">contact form</Link>. Under the Ghana Data Protection Act (Act 843) and equivalent regimes, a response is due within 30 days.</p>
             </>
           ),
         },

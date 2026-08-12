@@ -11,7 +11,44 @@
  * which one produced a given score.
  */
 
-const MODEL_ID = "Xenova/all-MiniLM-L6-v2";
+/**
+ * Models the project evaluates. `EMBEDDING_MODEL` selects the active one at
+ * runtime, which is what lets the benchmark harness swap backends without
+ * touching application code.
+ */
+export const MODEL_REGISTRY = {
+  "all-MiniLM-L6-v2": {
+    id: "Xenova/all-MiniLM-L6-v2",
+    dim: 384,
+    label: "all-MiniLM-L6-v2",
+    note: "Baseline sentence-transformer. Small enough for CPU-only deployment.",
+    available: true,
+  },
+  "paraphrase-mpnet-base-v2": {
+    id: "Xenova/paraphrase-multilingual-mpnet-base-v2",
+    dim: 768,
+    label: "paraphrase-mpnet-base-v2",
+    note: "Larger paraphrase-tuned model. Higher recall expected, higher cost.",
+    available: true,
+  },
+  "ghanaian-minilm": {
+    // Points at a locally fine-tuned checkpoint under MODEL_CACHE_DIR. Absent
+    // until the Ghanaian corpus has been collected and the fine-tune has run.
+    id: process.env.GHANAIAN_MODEL_ID ?? "local/ghanaian-minilm",
+    dim: 384,
+    label: "Ghanaian-writing fine-tuned MiniLM",
+    note: "MiniLM fine-tuned on the Ghanaian academic corpus. Not yet trained.",
+    available: Boolean(process.env.GHANAIAN_MODEL_ID),
+  },
+} as const;
+
+export type ModelKey = keyof typeof MODEL_REGISTRY;
+
+const ACTIVE_KEY = (process.env.EMBEDDING_MODEL as ModelKey) ?? "all-MiniLM-L6-v2";
+const ACTIVE = MODEL_REGISTRY[ACTIVE_KEY] ?? MODEL_REGISTRY["all-MiniLM-L6-v2"];
+
+const MODEL_ID = ACTIVE.id;
+export const EMBEDDING_MODEL_ID = ACTIVE.label;
 export const EMBEDDING_DIM = 384;
 
 export type EmbeddingBackend = "transformer" | "lexical";

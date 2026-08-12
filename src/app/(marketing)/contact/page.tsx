@@ -5,29 +5,34 @@ import { Card, PageHeader } from "@/components/ui";
 import { ContactForm } from "./contact-form";
 
 export const metadata = {
-  title: "Contact · AI-AIMS",
+  title: "Contact",
   description:
-    "Talk to us about a departmental pilot, institutional licensing or on-premise deployment.",
+    "Get in touch with the Lume AI project team about the research, a departmental pilot, or a security or data-protection question.",
 };
 
+/**
+ * No public mailbox is published for this project. Everything routes through
+ * the form below, which writes to the database — a placeholder address that
+ * bounces would be worse than no address at all.
+ */
 const CHANNELS = [
   {
     icon: Building2,
-    title: "Institutional enquiries",
-    body: "Licensing, pilots and procurement paperwork.",
-    detail: "institutions@ai-aims.example",
+    title: "Departmental pilots",
+    body: "Running Lume AI with a real cohort, and what that would involve.",
+    detail: "Use the form — choose “Pilot”",
   },
   {
     icon: LifeBuoy,
-    title: "Support",
-    body: "For staff and students on an existing deployment.",
-    detail: "support@ai-aims.example",
+    title: "Research questions",
+    body: "The methodology, the corpus, the benchmark or the evaluation design.",
+    detail: "Use the form — choose “Research”",
   },
   {
     icon: ShieldCheck,
     title: "Security & data protection",
-    body: "Vulnerability reports, DPAs and subject access requests.",
-    detail: "security@ai-aims.example",
+    body: "Vulnerability reports and data-protection questions.",
+    detail: "Use the form — choose “Security”",
   },
 ] as const;
 
@@ -37,7 +42,7 @@ export default function ContactPage() {
       <PageHeader
         eyebrow="Contact"
         title="Tell us what you're trying to do"
-        description="Whether you're piloting one course or licensing an institution, a real person reads this and replies within two working days."
+        description="Lume AI is a student research project at KNUST. Messages reach the project team; replies depend on term-time availability."
       />
 
       <div className="grid gap-8 lg:grid-cols-[1.3fr_1fr]">
@@ -95,10 +100,10 @@ export default function ContactPage() {
                       help centre
                     </Link>{" "}
                     covers setup, scoring, peer review and data handling. The{" "}
-                    <Link href="/pricing" className="font-medium text-brand hover:underline">
-                      pricing FAQ
+                    <Link href="/research" className="font-medium text-brand hover:underline">
+                      research page
                     </Link>{" "}
-                    covers licensing.
+                    covers what has and has not been evaluated.
                   </p>
                 </div>
               </div>

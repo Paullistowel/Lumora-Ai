@@ -296,17 +296,8 @@ crests.forEach(([name, colour], i) => {
 });
 
 // ── 11. Open Graph card ─────────────────────────────────────────────────────
-write(
-  "og.svg",
-  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="AI-AIMS">
-  ${defs("og")}
-  <rect width="1200" height="630" fill="${C.ink}"/>
-  <circle cx="250" cy="180" r="240" fill="${C.brand}" opacity="0.35" filter="url(#bog)"/>
-  <circle cx="950" cy="470" r="240" fill="${C.accent}" opacity="0.30" filter="url(#bog)"/>
-  <text x="80" y="300" font-family="system-ui,sans-serif" font-size="78" font-weight="800" fill="#fff">AI-AIMS</text>
-  <text x="80" y="368" font-family="system-ui,sans-serif" font-size="32" fill="#fff" opacity="0.72">Academic Integrity &amp; Assignment Management</text>
-  <text x="80" y="440" font-family="system-ui,sans-serif" font-size="24" fill="${C.accent2}">Semantic plagiarism detection · Writing feedback · Peer review</text>
-</svg>`,
-);
+// public/img/og.svg and public/icon.svg are hand-authored brand assets and are
+// deliberately NOT regenerated here — running this script must not overwrite
+// the Lume mark. Edit those two files directly.
 
 console.log("\nAssets generated.");

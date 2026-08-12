@@ -14,7 +14,7 @@ import { formatDate } from "@/lib/format";
 import { toggleSuspension } from "../actions";
 import { StaffForm } from "./staff-form";
 
-export const metadata = { title: "Users · AI-AIMS" };
+export const metadata = { title: "Users" };
 
 export default async function UsersPage({
   searchParams,

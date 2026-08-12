@@ -3,7 +3,7 @@ import { Badge, Card, PageHeader } from "@/components/ui";
 import { NewsletterForm } from "@/components/marketing/newsletter";
 
 export const metadata = {
-  title: "Changelog · AI-AIMS",
+  title: "Changelog",
   description: "What shipped, when, and what it changed.",
 };
 

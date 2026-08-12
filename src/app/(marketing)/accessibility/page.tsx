@@ -2,7 +2,7 @@ import Link from "next/link";
 import { LegalPage } from "@/components/marketing/legal-page";
 
 export const metadata = {
-  title: "Accessibility · AI-AIMS",
+  title: "Accessibility",
   description:
     "Our accessibility commitments, what is implemented, and what still needs work.",
 };
@@ -62,11 +62,8 @@ export default function AccessibilityPage() {
           heading: "Tell us where it fails",
           body: (
             <p>
-              If something blocks you, email{" "}
-              <a href="mailto:accessibility@ai-aims.example">
-                accessibility@ai-aims.example
-              </a>{" "}
-              or use the <Link href="/contact">contact form</Link>. Barriers that
+              If something blocks you, tell us through the{" "}
+              <Link href="/contact">contact form</Link>. Barriers that
               stop a student submitting work are treated as urgent, not as
               feature requests. Tell us what you were trying to do, what
               happened, and what assistive technology you use.

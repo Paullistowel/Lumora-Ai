@@ -2,7 +2,7 @@ import { GrammarTool } from "./grammar-tool";
 import { PageHeader } from "@/components/ui";
 
 export const metadata = {
-  title: "Free grammar checker · AI-AIMS",
+  title: "Free grammar checker",
   description:
     "Check spelling, grammar, punctuation and academic tone in your browser. Nothing is uploaded.",
 };

@@ -12,7 +12,7 @@ import {
   Th,
 } from "@/components/ui";
 
-export const metadata = { title: "Courses · AI-AIMS" };
+export const metadata = { title: "Courses" };
 
 export default async function LecturerCoursesPage() {
   const user = await requireRole("LECTURER");

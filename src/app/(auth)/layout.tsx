@@ -23,7 +23,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
             <span className="flex size-8 items-center justify-center rounded-xl bg-gradient-to-br from-brand to-accent text-white transition-transform group-hover:scale-105">
               <ShieldCheck className="size-4" />
             </span>
-            <span className="font-semibold tracking-tight">AI-AIMS</span>
+            <span className="font-semibold tracking-tight">Lume AI</span>
           </Link>
 
           <div className="flex items-center gap-1">

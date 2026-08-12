@@ -5,9 +5,10 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import {
-  ChevronDown, Menu, ShieldCheck, SpellCheck, Sparkles, ScanSearch, X,
+  ChevronDown, Menu, SpellCheck, Sparkles, ScanSearch, X,
 } from "lucide-react";
 import { ThemeToggle } from "../theme-toggle";
+import { LumeLogo } from "../brand";
 import { ButtonLink, cn } from "../ui";
 
 const TOOLS = [
@@ -32,10 +33,11 @@ const TOOLS = [
 ] as const;
 
 const LINKS = [
-  { href: "/features", label: "Features" },
-  { href: "/pricing", label: "Pricing" },
+  { href: "/features", label: "Platform" },
+  { href: "/how-it-works", label: "How it works" },
+  { href: "/research", label: "Research" },
+  { href: "/architecture", label: "Architecture" },
   { href: "/about", label: "About" },
-  { href: "/help", label: "Help" },
 ] as const;
 
 export function SiteNav({ signedIn }: { signedIn: boolean }) {
@@ -50,11 +52,6 @@ export function SiteNav({ signedIn }: { signedIn: boolean }) {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
-
-  useEffect(() => {
-    setMobileOpen(false);
-    setToolsOpen(false);
-  }, [pathname]);
 
   // The drawer traps scroll; restore it whenever the drawer closes.
   useEffect(() => {
@@ -75,12 +72,7 @@ export function SiteNav({ signedIn }: { signedIn: boolean }) {
         aria-label="Main"
         className="mx-auto flex max-w-7xl items-center gap-3 px-4 sm:px-6"
       >
-        <Link href="/" className="focus-ring group flex items-center gap-2 rounded-lg">
-          <span className="relative flex size-8 items-center justify-center rounded-xl bg-gradient-to-br from-brand to-accent text-white shadow-[var(--shadow-sm)] transition-transform group-hover:scale-105">
-            <ShieldCheck className="size-4" />
-          </span>
-          <span className="text-[15px] font-semibold tracking-tight">AI-AIMS</span>
-        </Link>
+        <LumeLogo />
 
         <div className="mx-auto hidden items-center gap-0.5 lg:flex">
           {/* Tools dropdown */}
@@ -100,7 +92,7 @@ export function SiteNav({ signedIn }: { signedIn: boolean }) {
                   : "text-muted hover:text-foreground",
               )}
             >
-              Free tools
+              Analyse
               <ChevronDown
                 className={cn("size-3.5 transition-transform", toolsOpen && "rotate-180")}
               />
@@ -120,6 +112,7 @@ export function SiteNav({ signedIn }: { signedIn: boolean }) {
                       <Link
                         key={tool.href}
                         href={tool.href}
+                        onClick={() => setToolsOpen(false)}
                         className="focus-ring flex gap-3 rounded-xl p-3 transition-colors hover:bg-surface-muted"
                       >
                         <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-brand-soft text-brand">
@@ -184,7 +177,7 @@ export function SiteNav({ signedIn }: { signedIn: boolean }) {
                 variant="gradient"
                 className="px-3.5 py-2 text-sm"
               >
-                Get started
+                Explore Lume AI
               </ButtonLink>
             </>
           )}
@@ -219,6 +212,11 @@ export function SiteNav({ signedIn }: { signedIn: boolean }) {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", stiffness: 320, damping: 34 }}
+              /* Any link inside closes the drawer, so navigating does not leave
+                 it open over the new page. */
+              onClick={(event) => {
+                if ((event.target as HTMLElement).closest("a")) setMobileOpen(false);
+              }}
               className="absolute inset-y-0 right-0 flex w-80 max-w-[86vw] flex-col overflow-y-auto border-l border-border bg-surface p-5"
             >
               <div className="mb-6 flex items-center justify-between">
@@ -234,7 +232,7 @@ export function SiteNav({ signedIn }: { signedIn: boolean }) {
               </div>
 
               <p className="mb-2 text-xs font-semibold tracking-wide text-muted uppercase">
-                Free tools
+                Analyse
               </p>
               <div className="mb-5 space-y-1">
                 {TOOLS.map((tool) => (
@@ -250,7 +248,7 @@ export function SiteNav({ signedIn }: { signedIn: boolean }) {
               </div>
 
               <p className="mb-2 text-xs font-semibold tracking-wide text-muted uppercase">
-                Product
+                Platform
               </p>
               <div className="space-y-1">
                 {LINKS.map((link) => (

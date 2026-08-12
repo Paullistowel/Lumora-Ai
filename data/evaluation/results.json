@@ -1,0 +1,32 @@
+{
+  "generatedAt": "2026-08-12T08:55:38.782Z",
+  "status": "pending",
+  "reason": "No labelled assignment-pair dataset is present. The benchmark has not been run.",
+  "dataset": null,
+  "models": [
+    {
+      "key": "all-MiniLM-L6-v2",
+      "label": "all-MiniLM-L6-v2",
+      "dimensions": 384,
+      "modelId": "Xenova/all-MiniLM-L6-v2",
+      "status": "pending",
+      "reason": "Awaiting the labelled evaluation dataset."
+    },
+    {
+      "key": "paraphrase-mpnet-base-v2",
+      "label": "paraphrase-mpnet-base-v2",
+      "dimensions": 768,
+      "modelId": "Xenova/paraphrase-multilingual-mpnet-base-v2",
+      "status": "pending",
+      "reason": "Awaiting the labelled evaluation dataset."
+    },
+    {
+      "key": "ghanaian-minilm",
+      "label": "Ghanaian-writing fine-tuned MiniLM",
+      "dimensions": 384,
+      "modelId": null,
+      "status": "pending",
+      "reason": "Awaiting the labelled evaluation dataset."
+    }
+  ]
+}

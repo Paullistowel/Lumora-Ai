@@ -5,7 +5,7 @@ import { Reveal, Stagger, StaggerItem, TiltCard } from "@/components/motion";
 import { Badge, Card, PageHeader, SectionHeading } from "@/components/ui";
 
 export const metadata = {
-  title: "Free writing tools · AI-AIMS",
+  title: "Free writing tools",
   description:
     "Grammar checker, plagiarism checker and AI humanizer. Free, no account, and your text never leaves your browser.",
 };

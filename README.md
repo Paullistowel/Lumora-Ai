@@ -1,6 +1,19 @@
-# AI-AIMS
+# Lume AI
 
-**AI Academic Integrity & Assignment Management Platform** — assignment workflow, semantic plagiarism detection, AI writing feedback and anonymous peer review, in one Next.js application.
+**AI-Powered Academic Integrity & Peer Review Platform**
+
+Intelligent document analysis, semantic plagiarism detection, academic writing
+feedback and structured peer review for higher education.
+
+> Research Prototype · Group 4 · KNUST · 2026
+>
+> *Illuminate. Analyse. Improve.*
+
+**Nothing in this application reports a research result that has not been
+measured.** Capabilities are labelled *implemented*, *experimental* or
+*evaluation pending*, and the accuracy figures the proposal targets are shown as
+targets — not achievements — until `npm run benchmark` produces them from a real
+labelled dataset. See [Research and evaluation](#research-and-evaluation).
 
 ## Quick start
 
@@ -29,7 +42,57 @@ All use the password `Password123`.
 | Student  | `ngozi@university.edu`    | Spare account                                    |
 
 Sign in as Amara and open **My submissions** to see the originality report catch a
-paraphrase that shares almost no wording with its source.
+paraphrase that shares almost no wording with its source. Or open **Analyse**
+as any role, paste two related passages, and watch the same engine run live.
+
+## The analysis workspace
+
+`/analyse` is available to every role and is independent of the assignment
+workflow. Upload a PDF, DOCX, DOC, TXT or Markdown file — or paste text — then
+choose any combination of:
+
+| Module | What it does |
+| --- | --- |
+| Semantic similarity | Cosine comparison of paragraph embeddings, classified as verbatim, near-verbatim or paraphrase by how much wording the passages share |
+| Academic writing | Readability, academic tone, structure, coherence and grammar, each issue paired with what to change |
+| Academic integrity | Citation coverage, and evidence-claims carrying no attribution nearby |
+| AI-style indicators | Stylistic regularity associated with generated prose — indicative only, never proof of authorship |
+
+The comparison corpus is assembled **server-side from what the caller is
+entitled to read**: reference texts they paste in, plus (optionally) their own
+earlier submissions for a student, submissions on their own courses for a
+lecturer, or all submissions for an admin. A student can never compare against a
+classmate's work, and an analysis is private to whoever ran it — including from
+staff.
+
+Processing runs through `after()` so the request returns immediately, and the
+report page polls `/api/analysis/[id]` for the stage the engine is genuinely on.
+The progress checklist is not on a timer.
+
+## Research and evaluation
+
+`/research` reports the project's objectives, targets, dataset status and model
+benchmark. Every number there is read from files under `data/evaluation/`; when a
+file is absent the page says *evaluation pending* rather than showing a
+placeholder.
+
+```bash
+npm run benchmark                                  # all available models
+npm run benchmark -- --model all-MiniLM-L6-v2      # one model
+npm run benchmark -- --threshold 0.80              # different decision threshold
+```
+
+The harness (`scripts/benchmark.mjs`) reads labelled assignment pairs from
+`data/corpus/pairs.jsonl` and computes precision, recall, F1, accuracy, the
+confusion matrix, ROC/AUC, the F1-optimal threshold, per-pair latency and peak
+memory — for `all-MiniLM-L6-v2`, `paraphrase-mpnet-base-v2` and a
+Ghanaian-fine-tuned MiniLM (set `GHANAIAN_MODEL_ID` once that checkpoint
+exists). See `data/corpus/README.md` for the dataset format and the consent,
+anonymisation and retention requirements that govern it.
+
+**Current status:** the corpus has not been collected, so the benchmark has not
+been run and the usability (SUS) and writing-improvement studies have not taken
+place. The application states this everywhere it would otherwise show a figure.
 
 ## How the AI works
 

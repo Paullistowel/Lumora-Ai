@@ -2,7 +2,7 @@ import { IntegrityGuide } from "@/components/integrity-guide";
 import { PageHeader } from "@/components/ui";
 import { requireRole } from "@/lib/auth";
 
-export const metadata = { title: "Academic integrity · AI-AIMS" };
+export const metadata = { title: "Academic integrity" };
 
 export default async function IntegrityPage() {
   await requireRole("STUDENT");

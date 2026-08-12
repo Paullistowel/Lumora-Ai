@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ScanSearch } from "lucide-react";
 import { requireRole } from "@/lib/auth";
 import { db } from "@/lib/db";
 import {
@@ -14,7 +15,7 @@ import { RiskBadge } from "@/components/similarity-report";
 import { formatDateTime, relativeTime } from "@/lib/format";
 import { riskBand, riskLevelFor, type RiskLevel } from "@/lib/risk";
 
-export const metadata = { title: "Dashboard · AI-AIMS" };
+export const metadata = { title: "Dashboard" };
 
 export default async function StudentDashboard() {
   const user = await requireRole("STUDENT");
@@ -94,11 +95,17 @@ export default async function StudentDashboard() {
         <PageHeader
           eyebrow="Your work"
           title={`Welcome back, ${user.fullName.split(" ")[0]}`}
-          description="Your submissions, deadlines and originality at a glance."
+          description="Your submissions, deadlines and originality at a glance. Analyse a draft before you submit it."
           action={
-            <ButtonLink href="/student/assignments" variant="gradient">
-              Submit an assignment
-            </ButtonLink>
+            <div className="flex flex-wrap gap-2">
+              <ButtonLink href="/analyse" variant="gradient">
+                <ScanSearch className="size-4" />
+                Analyse my work
+              </ButtonLink>
+              <ButtonLink href="/student/assignments" variant="secondary">
+                Submit an assignment
+              </ButtonLink>
+            </div>
           }
         />
       </div>

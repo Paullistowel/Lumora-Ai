@@ -29,8 +29,14 @@ const STEPS: Record<Role, Step[]> = {
   STUDENT: [
     {
       target: "welcome",
-      title: "Welcome to AI-AIMS",
+      title: "Welcome to Lume AI",
       body: "A two-minute tour of where everything lives. You can skip it and reopen it later from Settings.",
+    },
+    {
+      target: "nav-analyse",
+      title: "The analysis workspace",
+      body: "Upload a document or paste text and analyse it whenever you like — similarity, writing, integrity and AI-style. It is private to you and separate from submitting an assignment, so use it on drafts.",
+      placement: "right",
     },
     {
       target: "nav-assignments",
@@ -72,8 +78,14 @@ const STEPS: Record<Role, Step[]> = {
   LECTURER: [
     {
       target: "welcome",
-      title: "Welcome to AI-AIMS",
+      title: "Welcome to Lume AI",
       body: "A quick tour of the teaching side. You can skip it and reopen it later from Settings.",
+    },
+    {
+      target: "nav-analyse",
+      title: "The analysis workspace",
+      body: "Upload or paste any academic document — a paper you are reviewing, work from outside the platform, anything — and run the same analysis on it. It is not tied to an assignment.",
+      placement: "right",
     },
     {
       target: "nav-courses",
@@ -103,7 +115,7 @@ const STEPS: Record<Role, Step[]> = {
   ADMIN: [
     {
       target: "welcome",
-      title: "Welcome to AI-AIMS",
+      title: "Welcome to Lume AI",
       body: "A quick tour of administration. You can skip it and reopen it later from Settings.",
     },
     {
@@ -166,6 +178,10 @@ export function OnboardingTour({ role }: { role: Role }) {
 
   useLayoutEffect(() => {
     if (!active) return;
+    // Measuring the spotlight target is exactly what a layout effect is for:
+    // the position can only be read from the laid-out DOM, and it must be
+    // applied before paint or the highlight flashes in the wrong place.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     measure();
     window.addEventListener("resize", measure);
     window.addEventListener("scroll", measure, true);
@@ -181,6 +197,10 @@ export function OnboardingTour({ role }: { role: Role }) {
     const step = steps[index];
     if (!step || step.target === "welcome") return;
     const exists = document.querySelector(`[data-tour="${step.target}"]`);
+    // Whether a step's target is on screen depends on the viewport, which is
+    // only knowable after render — so advancing past a missing target has to
+    // happen here.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (!exists && index < steps.length - 1) setIndex((i) => i + 1);
   }, [active, index, steps]);
 

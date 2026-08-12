@@ -1,11 +1,12 @@
+import Link from "next/link";
 import { KeyRound, Lock, ScrollText, Server, ShieldCheck, UserCheck } from "lucide-react";
 import { Reveal, Stagger, StaggerItem } from "@/components/motion";
 import { ButtonLink, Card, PageHeader, SectionHeading } from "@/components/ui";
 
 export const metadata = {
-  title: "Security · AI-AIMS",
+  title: "Security",
   description:
-    "How AI-AIMS protects student work: local models, revocable sessions, server-side authorisation and a full audit trail.",
+    "How Lume AI protects student work: local models, revocable sessions, server-side authorisation and a full audit trail.",
 };
 
 const CONTROLS = [
@@ -112,15 +113,15 @@ export default function SecurityPage() {
           <Card className="mx-auto mt-10 max-w-3xl p-8">
             <h3 className="font-semibold">Reporting a vulnerability</h3>
             <p className="mt-2 text-muted">
-              Email{" "}
-              <a
-                href="mailto:security@ai-aims.example"
-                className="font-medium text-brand hover:underline"
-              >
-                security@ai-aims.example
-              </a>{" "}
-              with steps to reproduce. We acknowledge within 24 hours and aim to
-              have a fix or a mitigation plan within seven days.
+              Lume AI is a student research project and does not operate a
+              monitored security mailbox. Report anything you find through the{" "}
+              <Link href="/contact" className="font-medium text-brand hover:underline">
+                contact form
+              </Link>{" "}
+              with steps to reproduce, choosing the security topic. If you are
+              testing a deployment run by a university, report it to that
+              institution&apos;s IT security team as well — they operate the system
+              and can act on it immediately.
             </p>
 
             <h3 className="mt-6 font-semibold">Our commitments to you</h3>
@@ -159,7 +160,7 @@ export default function SecurityPage() {
           <Card className="mx-auto max-w-3xl p-8">
             <h2 className="text-lg font-semibold">Honest scope</h2>
             <p className="mt-2 text-muted">
-              AI-AIMS is a platform in academic development. The controls above
+              Lume AI is a platform in academic development. The controls above
               are implemented and verifiable in the source. We do not hold
               SOC 2 or ISO 27001 certification, and we are not going to imply
               otherwise — if your procurement process requires one, tell us early

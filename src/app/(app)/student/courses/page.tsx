@@ -10,7 +10,7 @@ import {
 } from "@/components/ui";
 import { enrol, unenrol } from "../actions";
 
-export const metadata = { title: "Courses · AI-AIMS" };
+export const metadata = { title: "Courses" };
 
 export default async function CoursesPage() {
   const user = await requireRole("STUDENT");

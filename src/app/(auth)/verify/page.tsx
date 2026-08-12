@@ -1,6 +1,6 @@
 import { VerifyForm } from "./verify-form";
 
-export const metadata = { title: "Verify email · AI-AIMS" };
+export const metadata = { title: "Verify email" };
 
 export default async function VerifyPage({
   searchParams,

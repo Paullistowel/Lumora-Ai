@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ScanSearch } from "lucide-react";
 import { requireRole } from "@/lib/auth";
 import { db } from "@/lib/db";
 import {
@@ -14,7 +15,7 @@ import { RiskBadge } from "@/components/similarity-report";
 import { riskLevelFor, type RiskLevel } from "@/lib/risk";
 import { relativeTime } from "@/lib/format";
 
-export const metadata = { title: "Dashboard · AI-AIMS" };
+export const metadata = { title: "Dashboard" };
 
 export default async function LecturerDashboard() {
   const user = await requireRole("LECTURER");
@@ -98,11 +99,17 @@ export default async function LecturerDashboard() {
         <PageHeader
           eyebrow="Teaching"
           title="Lecturer dashboard"
-          description="Submissions, integrity signals and marking across your courses."
+          description="Submissions, integrity signals and marking across your courses. Analyse any document, in or out of the platform."
           action={
-            <ButtonLink href="/lecturer/assignments" variant="gradient">
-              Assignments
-            </ButtonLink>
+            <div className="flex flex-wrap gap-2">
+              <ButtonLink href="/analyse" variant="gradient">
+                <ScanSearch className="size-4" />
+                Analyse a document
+              </ButtonLink>
+              <ButtonLink href="/lecturer/analytics" variant="secondary">
+                Analytics
+              </ButtonLink>
+            </div>
           }
         />
       </div>
