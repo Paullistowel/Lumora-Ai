@@ -355,10 +355,7 @@ export default async function PeerReviewPage({
                   {relativeTime(document.createdAt)}
                 </p>
                 <form
-                  action={async () => {
-                    "use server";
-                    await claimReview(document.id);
-                  }}
+                  action={claimReview.bind(null, document.id)}
                   className="mt-auto"
                 >
                   <Button type="submit" variant="secondary" className="w-full">

@@ -8,7 +8,9 @@ import { randomUUID } from "node:crypto";
  * object-storage client touches only this file.
  */
 
-const ROOT = resolve(process.env.STORAGE_DIR ?? "./storage");
+const ROOT = process.env.STORAGE_DIR
+  ? resolve(process.env.STORAGE_DIR)
+  : join(/* turbopackIgnore: true */ process.cwd(), "storage");
 
 function pathFor(key: string) {
   const full = resolve(ROOT, key);

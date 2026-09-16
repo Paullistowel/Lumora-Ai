@@ -7,7 +7,6 @@ import {
   createSession,
   dashboardPath,
   destroySession,
-  generateOtp,
   hashPassword,
   hashToken,
   verifyPassword,
@@ -62,7 +61,6 @@ export async function registerStudent(
     };
   }
 
-  const otp = generateOtp();
   const user = await db.user.create({
     data: {
       email: data.email,
@@ -72,17 +70,13 @@ export async function registerStudent(
       matricNumber: data.matricNumber,
       level: data.level,
       departmentId: data.departmentId,
-      otpHash: hashToken(otp),
-      otpExpiresAt: new Date(Date.now() + 15 * 60_000),
+      emailVerified: true,
     },
   });
 
   await audit({ userId: user.id, action: "REGISTER", entity: "User", entityId: user.id });
-
-  // No SMTP in development — surface the code so the flow is testable.
-  console.info(`[auth] verification code for ${user.email}: ${otp}`);
-
-  redirect(`/verify?email=${encodeURIComponent(user.email)}`);
+  await createSession(user.id);
+  redirect(dashboardPath(user.role as Role));
 }
 
 const verifySchema = z.object({
@@ -149,8 +143,6 @@ export async function login(
       passwordHash: true,
       role: true,
       suspended: true,
-      emailVerified: true,
-      email: true,
     },
   });
 
@@ -165,10 +157,6 @@ export async function login(
   if (user.suspended) {
     return { error: "This account has been suspended. Contact your administrator." };
   }
-  if (!user.emailVerified) {
-    redirect(`/verify?email=${encodeURIComponent(user.email)}`);
-  }
-
   await db.user.update({
     where: { id: user.id },
     data: { lastLoginAt: new Date() },
