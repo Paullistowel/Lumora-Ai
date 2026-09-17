@@ -11,10 +11,17 @@ export default async function RegisterPage() {
   const user = await getCurrentUser();
   if (user) redirect(dashboardPath(user.role));
 
-  const departments = await db.department.findMany({
-    orderBy: { name: "asc" },
-    select: { id: true, name: true, code: true },
-  });
+  let departments: { id: string; name: string; code: string }[] = [];
+  let databaseError = false;
+  try {
+    departments = await db.department.findMany({
+      orderBy: { name: "asc" },
+      select: { id: true, name: true, code: true },
+    });
+  } catch (error) {
+    console.error("[auth] Registration page database lookup failed", error);
+    databaseError = true;
+  }
 
   return (
     <>
@@ -24,7 +31,13 @@ export default async function RegisterPage() {
         administrator.
       </p>
 
-      {departments.length === 0 ? (
+      {databaseError ? (
+        <Alert tone="error">
+          Account services are not available yet. Configure a hosted
+          <code className="mx-1">DATABASE_URL</code> in Vercel, run the Prisma
+          migrations, and redeploy.
+        </Alert>
+      ) : departments.length === 0 ? (
         <Alert tone="error">
           No departments exist yet. Run <code>npm run db:seed</code> or ask an
           administrator to create one.

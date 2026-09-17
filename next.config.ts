@@ -9,8 +9,8 @@ const nextConfig: NextConfig = {
     "sharp",
     "pdf-parse",
     "mammoth",
-    "better-sqlite3",
-    "@prisma/adapter-better-sqlite3",
+    "@prisma/adapter-pg",
+    "pg",
   ],
   experimental: {
     serverActions: {

@@ -1,5 +1,6 @@
 // Lume AI — AI Academic Integrity & Assignment Management Platform
-// Dev datasource is SQLite; swap `provider` to "postgresql" for production.
+// Neon PostgreSQL is used in production and local development when DATABASE_URL
+// points at the linked Neon branch.
 
 generator client {
   provider = "prisma-client"
@@ -7,7 +8,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
 }
 
 // ─────────────────────────────────────────────

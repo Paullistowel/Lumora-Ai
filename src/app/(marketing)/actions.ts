@@ -113,15 +113,22 @@ export async function saveConsent(choice: {
     maxAge: 60 * 60 * 24 * 182, // re-ask every six months
   });
 
-  // A durable record of what was consented to and when.
-  await db.consentRecord.create({
-    data: {
-      visitorId,
-      analytics: choice.analytics,
-      marketing: choice.marketing,
-      userAgent: headerList.get("user-agent")?.slice(0, 255) ?? null,
-    },
-  });
+  // Consent must still work when the optional audit store is unavailable.
+  // This is important on deployments where the database is read-only or its
+  // migrations have not run yet: the cookie is the browser's actual consent
+  // record.
+  try {
+    await db.consentRecord.create({
+      data: {
+        visitorId,
+        analytics: choice.analytics,
+        marketing: choice.marketing,
+        userAgent: headerList.get("user-agent")?.slice(0, 255) ?? null,
+      },
+    });
+  } catch (error) {
+    console.error("[consent] Could not persist consent audit record", error);
+  }
 }
 
 export async function getConsent(): Promise<ConsentChoice | null> {

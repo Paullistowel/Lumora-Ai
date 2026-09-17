@@ -109,24 +109,36 @@ export async function getCurrentUser(): Promise<SessionUser | null> {
 
   // A valid JWT is not enough — the session row must still exist, which is
   // what makes admin revocation and logout-everywhere work.
-  const session = await db.session.findUnique({
-    where: { tokenHash: hashToken(token) },
-    select: { expiresAt: true },
-  });
+  let session;
+  try {
+    session = await db.session.findUnique({
+      where: { tokenHash: hashToken(token) },
+      select: { expiresAt: true },
+    });
+  } catch (error) {
+    console.error("[auth] Session lookup failed", error);
+    return null;
+  }
   if (!session || session.expiresAt < new Date()) return null;
 
-  const user = await db.user.findUnique({
-    where: { id: userId },
-    select: {
-      id: true,
-      email: true,
-      fullName: true,
-      role: true,
-      departmentId: true,
-      avatarUrl: true,
-      suspended: true,
-    },
-  });
+  let user;
+  try {
+    user = await db.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        email: true,
+        fullName: true,
+        role: true,
+        departmentId: true,
+        avatarUrl: true,
+        suspended: true,
+      },
+    });
+  } catch (error) {
+    console.error("[auth] User lookup failed", error);
+    return null;
+  }
   if (!user || user.suspended) return null;
 
   // `suspended` is selected only for the guard above; it never reaches the

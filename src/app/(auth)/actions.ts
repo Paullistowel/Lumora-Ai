@@ -46,12 +46,18 @@ export async function registerStudent(
   }
   const data = parsed.data;
 
-  const clash = await db.user.findFirst({
-    where: {
-      OR: [{ email: data.email }, { matricNumber: data.matricNumber }],
-    },
-    select: { email: true },
-  });
+  let clash;
+  try {
+    clash = await db.user.findFirst({
+      where: {
+        OR: [{ email: data.email }, { matricNumber: data.matricNumber }],
+      },
+      select: { email: true },
+    });
+  } catch (error) {
+    console.error("[auth] Registration database lookup failed", error);
+    return { error: "Account services are not configured yet. Set DATABASE_URL in Vercel and redeploy." };
+  }
   if (clash) {
     return {
       error:
@@ -61,21 +67,32 @@ export async function registerStudent(
     };
   }
 
-  const user = await db.user.create({
-    data: {
-      email: data.email,
-      fullName: data.fullName,
-      passwordHash: await hashPassword(data.password),
-      role: "STUDENT",
-      matricNumber: data.matricNumber,
-      level: data.level,
-      departmentId: data.departmentId,
-      emailVerified: true,
-    },
-  });
+  let user;
+  try {
+    user = await db.user.create({
+      data: {
+        email: data.email,
+        fullName: data.fullName,
+        passwordHash: await hashPassword(data.password),
+        role: "STUDENT",
+        matricNumber: data.matricNumber,
+        level: data.level,
+        departmentId: data.departmentId,
+        emailVerified: true,
+      },
+    });
+  } catch (error) {
+    console.error("[auth] Registration failed", error);
+    return { error: "Account creation is unavailable. Check the production database and migrations." };
+  }
 
   await audit({ userId: user.id, action: "REGISTER", entity: "User", entityId: user.id });
-  await createSession(user.id);
+  try {
+    await createSession(user.id);
+  } catch (error) {
+    console.error("[auth] Registration session creation failed", error);
+    return { error: "Account was created, but sign-in could not be started. Check the production database configuration." };
+  }
   redirect(dashboardPath(user.role as Role));
 }
 
@@ -136,15 +153,21 @@ export async function login(
   const parsed = loginSchema.safeParse(Object.fromEntries(formData));
   if (!parsed.success) return { error: parsed.error.issues[0].message };
 
-  const user = await db.user.findUnique({
-    where: { email: parsed.data.email },
-    select: {
-      id: true,
-      passwordHash: true,
-      role: true,
-      suspended: true,
-    },
-  });
+  let user;
+  try {
+    user = await db.user.findUnique({
+      where: { email: parsed.data.email },
+      select: {
+        id: true,
+        passwordHash: true,
+        role: true,
+        suspended: true,
+      },
+    });
+  } catch (error) {
+    console.error("[auth] Login database lookup failed", error);
+    return { error: "Sign-in is temporarily unavailable. Check the production database configuration." };
+  }
 
   // Same message for unknown email and wrong password — do not let the form
   // confirm which addresses have accounts.
@@ -157,11 +180,21 @@ export async function login(
   if (user.suspended) {
     return { error: "This account has been suspended. Contact your administrator." };
   }
-  await db.user.update({
-    where: { id: user.id },
-    data: { lastLoginAt: new Date() },
-  });
-  await createSession(user.id);
+  try {
+    await db.user.update({
+      where: { id: user.id },
+      data: { lastLoginAt: new Date() },
+    });
+  } catch (error) {
+    console.error("[auth] Login update failed", error);
+    return { error: "Sign-in is temporarily unavailable. Check the production database configuration." };
+  }
+  try {
+    await createSession(user.id);
+  } catch (error) {
+    console.error("[auth] Login session creation failed", error);
+    return { error: "Password accepted, but sign-in could not be completed. Check the production database configuration." };
+  }
   await audit({ userId: user.id, action: "LOGIN" });
 
   redirect(dashboardPath(user.role as Role));

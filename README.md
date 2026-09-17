@@ -20,11 +20,15 @@ labelled dataset. See [Research and evaluation](#research-and-evaluation).
 ```bash
 npm install
 npm run fetch-model    # caches all-MiniLM-L6-v2 (~23MB) for the similarity engine
-npm run db:migrate     # creates dev.db
+npm run db:migrate     # applies the Prisma schema to DATABASE_URL
 npm run db:seed        # demo institution, courses, students, submissions
 npm run db:analyze     # embeds the seeded submissions and builds their reports
 npm run dev
 ```
+
+`DATABASE_URL` must point to PostgreSQL. This project is linked to Neon; run
+`neon link` to pull its connection variables before running database commands.
+The old local `file:./dev.db` SQLite URL is not supported.
 
 Then open <http://localhost:3000>.
 
@@ -156,7 +160,7 @@ prisma/
 ```
 
 **Stack.** Next.js 16 (App Router, server actions) · TypeScript · Tailwind 4 ·
-Prisma 7 · SQLite (dev) · transformers.js.
+Prisma 7 · Neon PostgreSQL · transformers.js.
 
 ### Risk bands
 
@@ -184,11 +188,10 @@ transports (13), PDF/Excel report export (14), recommendation engine (17).
 
 ## Production notes
 
-Deliberate development-mode shortcuts, each a one-file change:
+Deliberate development-mode shortcuts:
 
-- **SQLite → Postgres.** Swap `provider` in `schema.prisma` and the adapter in
-  `src/lib/db.ts` for `PrismaPg`. Store embeddings in a `pgvector` column and the
-  similarity scan becomes an indexed query instead of a full scan.
+- **Embeddings remain text-backed.** Store embeddings in a `pgvector` column and
+  the similarity scan becomes an indexed query instead of a full scan.
 - **Similarity is O(corpus).** Fine for a class; add an ANN index (pgvector
   HNSW) before an institution-wide corpus.
 - **Processing runs inline** in the upload request. Move `processSubmission` to a

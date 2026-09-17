@@ -1,11 +1,10 @@
 import { PrismaClient } from "@/generated/prisma/client";
-import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
+import { PrismaPg } from "@prisma/adapter-pg";
 
 function createClient() {
-  const url = process.env.DATABASE_URL ?? "file:./dev.db";
-  // Swapping to Postgres in production means swapping this adapter for
-  // `PrismaPg` and the datasource provider in schema.prisma.
-  const adapter = new PrismaBetterSqlite3({ url });
+  const url = process.env.DATABASE_URL;
+  if (!url) throw new Error("DATABASE_URL is required. Link a Neon branch or configure a database URL.");
+  const adapter = new PrismaPg({ connectionString: url });
   return new PrismaClient({ adapter });
 }
 
