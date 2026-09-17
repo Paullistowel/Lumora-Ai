@@ -83,13 +83,25 @@ export default function LandingPage() {
   return (
     <>
       {/* ── Hero ───────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden pt-10 pb-24 sm:pt-16">
-        <div className="aurora" aria-hidden />
-        <div className="grid-lines" aria-hidden />
+      <section className="relative isolate overflow-hidden pt-10 pb-24 sm:pt-16">
+        <video
+          className="pointer-events-none absolute inset-0 -z-20 h-full w-full object-cover opacity-[0.34] saturate-[1.05] contrast-[1.05]"
+          autoPlay
+          muted
+          loop
+          playsInline
+          poster="/img/hero-analysis.svg"
+          aria-hidden="true"
+        >
+          <source src="/media/lumora-hero.mp4" type="video/mp4" />
+        </video>
+        <div className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(90deg,color-mix(in_srgb,var(--surface)_96%,transparent)_0%,color-mix(in_srgb,var(--surface)_74%,transparent)_46%,color-mix(in_srgb,var(--surface)_28%,transparent)_100%)]" aria-hidden />
+        <div className="aurora opacity-75" aria-hidden />
+        <div className="grid-lines opacity-60" aria-hidden />
         <div className="noise" aria-hidden />
 
         <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-[1.05fr_1fr]">
-          <div>
+          <div className="relative max-w-2xl">
             <Reveal direction="none">
               <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-surface/80 py-1.5 pr-3 pl-1.5 text-xs font-medium backdrop-blur">
                 <span className="rounded-full bg-gradient-to-r from-brand to-accent px-2 py-0.5 text-[11px] text-white">
@@ -101,7 +113,7 @@ export default function LandingPage() {
 
             <AnimatedHeading
               text="Illuminate your academic work with AI"
-              className="text-4xl font-semibold tracking-tight text-balance sm:text-5xl lg:text-6xl"
+              className="max-w-xl text-4xl font-semibold tracking-tight text-balance sm:text-5xl lg:text-6xl"
             />
 
             <Reveal delay={0.35}>
@@ -122,8 +134,8 @@ export default function LandingPage() {
                 <ButtonLink href="/research" variant="secondary" className="px-6 py-3">
                   View research
                 </ButtonLink>
-                <ButtonLink href="/tools/plagiarism" variant="ghost" className="px-6 py-3">
-                  Analyse a document
+                <ButtonLink href="/writing" variant="ghost" className="px-6 py-3">
+                  Open writing workspace
                 </ButtonLink>
               </div>
             </Reveal>
@@ -144,11 +156,11 @@ export default function LandingPage() {
             </Reveal>
           </div>
 
-          <Reveal delay={0.3} direction="left">
+          <Reveal delay={0.3} direction="left" className="relative lg:translate-y-6">
             <Parallax strength={26}>
               <TiltCard className="group" intensity={7}>
                 <div className="glow-ring relative rounded-3xl">
-                  <div className="relative overflow-hidden rounded-3xl border border-border bg-surface p-2 shadow-[var(--shadow-lg)]">
+                  <div className="relative overflow-hidden rounded-3xl border border-white/40 bg-surface/80 p-2 shadow-[var(--shadow-lg)] backdrop-blur-sm">
                     <Image
                       src="/img/hero-analysis.svg"
                       alt="A Lume AI analysis report: two academic passages side by side with the matching paragraphs highlighted and a paragraph-level similarity heatmap beneath them"
@@ -158,6 +170,32 @@ export default function LandingPage() {
                       className="w-full rounded-2xl"
                     />
                   </div>
+
+                  <Layer3D
+                    z={40}
+                    className="pointer-events-none absolute -right-7 top-10 hidden w-32 rotate-3 overflow-hidden rounded-2xl border-4 border-surface shadow-[var(--shadow-lg)] sm:block"
+                  >
+                    <Image
+                      src="/media/classroom-collaboration.jpg"
+                      alt="Students collaborating around a table"
+                      width={320}
+                      height={220}
+                      className="aspect-[1.45] object-cover"
+                    />
+                  </Layer3D>
+
+                  <Layer3D
+                    z={45}
+                    className="pointer-events-none absolute -bottom-12 -left-8 hidden w-36 -rotate-6 overflow-hidden rounded-2xl border-4 border-surface shadow-[var(--shadow-lg)] sm:block"
+                  >
+                    <Image
+                      src="/media/classroom-discussion.jpg"
+                      alt="Students discussing their academic work"
+                      width={320}
+                      height={220}
+                      className="aspect-[1.45] object-cover"
+                    />
+                  </Layer3D>
 
                   <Layer3D
                     z={60}

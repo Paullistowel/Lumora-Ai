@@ -40,7 +40,13 @@ const LINKS = [
   { href: "/about", label: "About" },
 ] as const;
 
-export function SiteNav({ signedIn }: { signedIn: boolean }) {
+export function SiteNav({
+  signedIn,
+  dashboardHref,
+}: {
+  signedIn: boolean;
+  dashboardHref: string;
+}) {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -161,7 +167,7 @@ export function SiteNav({ signedIn }: { signedIn: boolean }) {
         <div className="ml-auto flex items-center gap-2 lg:ml-0">
           <ThemeToggle />
           {signedIn ? (
-            <ButtonLink href="/" className="hidden px-3.5 py-2 text-sm sm:inline-flex">
+            <ButtonLink href={dashboardHref} className="hidden px-3.5 py-2 text-sm sm:inline-flex">
               Open dashboard
             </ButtonLink>
           ) : (
@@ -263,12 +269,20 @@ export function SiteNav({ signedIn }: { signedIn: boolean }) {
               </div>
 
               <div className="mt-auto space-y-2 pt-6">
-                <ButtonLink href="/register" variant="gradient" className="w-full">
-                  Get started free
-                </ButtonLink>
-                <ButtonLink href="/login" variant="secondary" className="w-full">
-                  Sign in
-                </ButtonLink>
+                {signedIn ? (
+                  <ButtonLink href={dashboardHref} variant="gradient" className="w-full">
+                    Open dashboard
+                  </ButtonLink>
+                ) : (
+                  <>
+                    <ButtonLink href="/register" variant="gradient" className="w-full">
+                      Get started free
+                    </ButtonLink>
+                    <ButtonLink href="/login" variant="secondary" className="w-full">
+                      Sign in
+                    </ButtonLink>
+                  </>
+                )}
               </div>
             </motion.div>
           </motion.div>

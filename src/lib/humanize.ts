@@ -363,28 +363,33 @@ export function humanize(
   if (options.trimHedging) {
     // Only strip a hedge when two or more sit in the same sentence.
     text = text
-      .split(/(?<=[.!?])\s+/)
-      .map((sentence) => {
-        const found = HEDGES.filter((h) =>
-          new RegExp(`\\b${h}\\b`, "i").test(sentence),
-        );
-        if (found.length < 2) return sentence;
-        let output = sentence;
-        for (const hedge of found.slice(1)) {
-          const pattern = new RegExp(`\\s*\\b${hedge}\\b,?\\s*`, "i");
-          if (pattern.test(output)) {
-            output = output.replace(pattern, " ");
-            changes.push({
-              kind: "HEDGE",
-              before: hedge,
-              after: "(removed)",
-              reason: "Several hedges in one sentence weaken the claim.",
-            });
-          }
-        }
-        return output.replace(/\s{2,}/g, " ").trim();
-      })
-      .join(" ");
+      .split(/\n{2,}/)
+      .map((paragraph) =>
+        paragraph
+          .split(/(?<=[.!?])\s+/)
+          .map((sentence) => {
+            const found = HEDGES.filter((h) =>
+              new RegExp(`\\b${h}\\b`, "i").test(sentence),
+            );
+            if (found.length < 2) return sentence;
+            let output = sentence;
+            for (const hedge of found.slice(1)) {
+              const pattern = new RegExp(`\\s*\\b${hedge}\\b,?\\s*`, "i");
+              if (pattern.test(output)) {
+                output = output.replace(pattern, " ");
+                changes.push({
+                  kind: "HEDGE",
+                  before: hedge,
+                  after: "(removed)",
+                  reason: "Several hedges in one sentence weaken the claim.",
+                });
+              }
+            }
+            return output.replace(/[ \t]{2,}/g, " ").trim();
+          })
+          .join(" "),
+      )
+      .join("\n\n");
   }
 
   if (options.varyRhythm) {
@@ -393,7 +398,7 @@ export function humanize(
 
   // Tidy the artefacts left by removals.
   text = text
-    .replace(/\s{2,}/g, " ")
+    .replace(/[ \t]{2,}/g, " ")
     .replace(/\s+([,.;:!?])/g, "$1")
     .replace(/([.!?])\s*([a-z])/g, (_m, punct: string, letter: string) =>
       `${punct} ${letter.toUpperCase()}`,
@@ -409,10 +414,14 @@ export function humanize(
  * where a clean clause boundary exists, so meaning survives.
  */
 function varySentenceRhythm(text: string, changes: HumanizeChange[]): string {
-  const sentences = text.split(/(?<=[.!?])\s+/);
+  const paragraphs = text.split(/\n{2,}/);
   const output: string[] = [];
 
-  for (const sentence of sentences) {
+  for (const paragraph of paragraphs) {
+    const sentences = paragraph.split(/(?<=[.!?])\s+/);
+    const paragraphOutput: string[] = [];
+
+    for (const sentence of sentences) {
     const words = (sentence.match(/[A-Za-z0-9'-]+/g) ?? []).length;
 
     if (words > 32) {
@@ -435,15 +444,18 @@ function varySentenceRhythm(text: string, changes: HumanizeChange[]): string {
           after: `Split into two sentences (${words} words)`,
           reason: "Long sentences flatten the rhythm and bury the main clause.",
         });
-        output.push(rebuilt);
+        paragraphOutput.push(rebuilt);
         continue;
       }
     }
 
-    output.push(sentence);
+      paragraphOutput.push(sentence);
+    }
+
+    output.push(paragraphOutput.join(" "));
   }
 
-  return output.join(" ");
+  return output.join("\n\n");
 }
 
 function applyCase(original: string, replacement: string): string {

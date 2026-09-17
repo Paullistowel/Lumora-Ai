@@ -7,8 +7,8 @@ import { AnimatePresence, motion } from "motion/react";
 import {
   BarChart3, Bell, BookOpen, Building2, ClipboardList, FileText,
   FlaskConical, GitCompare, GraduationCap, LayoutDashboard, LineChart, LogOut,
-  FolderOpen, Menu, ScanSearch, ScrollText, Settings, ShieldCheck, Sparkles,
-  Users, X,
+  FolderOpen, Menu, PenLine, ScanSearch, ScrollText, Settings, ShieldCheck,
+  Sparkles, Users, X,
 } from "lucide-react";
 import type { Role, SessionUser } from "@/lib/auth";
 import { ThemeToggle } from "./theme-toggle";
@@ -36,6 +36,7 @@ const ICONS = {
   progress: LineChart,
   research: FlaskConical,
   compare: GitCompare,
+  writing: PenLine,
 } as const;
 
 type NavItem = {
@@ -50,6 +51,7 @@ const NAV: Record<Role, NavItem[]> = {
   STUDENT: [
     { href: "/student", label: "Dashboard", icon: "dashboard" },
     { href: "/analyse", label: "Analyse", icon: "analyse", tour: "nav-analyse" },
+    { href: "/writing", label: "Writing workspace", icon: "writing" },
     { href: "/student/assignments", label: "Assignments", icon: "assignments", tour: "nav-assignments" },
     { href: "/student/submissions", label: "My submissions", icon: "submissions", tour: "nav-submissions" },
     { href: "/reports", label: "Reports", icon: "reports" },
@@ -63,6 +65,7 @@ const NAV: Record<Role, NavItem[]> = {
   LECTURER: [
     { href: "/lecturer", label: "Dashboard", icon: "dashboard" },
     { href: "/analyse", label: "Analyse", icon: "analyse", tour: "nav-analyse" },
+    { href: "/writing", label: "Writing workspace", icon: "writing" },
     { href: "/reports", label: "My reports", icon: "reports" },
     { href: "/documents", label: "Documents", icon: "documents" },
     { href: "/lecturer/submissions", label: "Submissions & reports", icon: "submissions" },

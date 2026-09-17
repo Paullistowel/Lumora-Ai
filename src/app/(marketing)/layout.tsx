@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { getCurrentUser } from "@/lib/auth";
+import { dashboardPath, getCurrentUser } from "@/lib/auth";
 import { SiteNav } from "@/components/marketing/site-nav";
 import { SiteFooter } from "@/components/marketing/site-footer";
 import { CookieConsent } from "@/components/marketing/cookie-consent";
@@ -15,7 +15,10 @@ export default async function MarketingLayout({
   return (
     <div className="flex min-h-dvh flex-col">
       <ScrollProgress />
-      <SiteNav signedIn={Boolean(user)} />
+      <SiteNav
+        signedIn={Boolean(user)}
+        dashboardHref={user ? dashboardPath(user.role) : "/login"}
+      />
       <main className="flex-1 pt-20">{children}</main>
       <SiteFooter />
       <CookieConsent />
